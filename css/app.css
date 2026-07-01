@@ -828,9 +828,9 @@ textarea{
 
 .brandLogo{
 
-    width:52px;
+    width:72px;
 
-    height:52px;
+    height:72px;
 
 }
 
@@ -967,6 +967,188 @@ textarea{
 
     justify-content:center;
 
+}
+
+
+/* =====================================================
+   NETWORK DROPDOWN
+   ===================================================== */
+
+.dropdown{
+
+    position:relative;
+
+}
+
+.dropdownToggle{
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+.dropdownToggle[aria-expanded="true"] [data-lucide="chevron-down"]{
+
+    transform:rotate(180deg);
+
+}
+
+.dropdownToggle [data-lucide="chevron-down"]{
+
+    transition:var(--transition);
+
+}
+
+.dropdownMenu{
+
+    position:absolute;
+
+    top:calc(100% + 8px);
+
+    left:0;
+
+    z-index:1000;
+
+    min-width:260px;
+
+    max-height:340px;
+
+    overflow-y:auto;
+
+    padding:8px;
+
+    margin:0;
+
+    list-style:none;
+
+    border-radius:16px;
+
+    border:1px solid rgba(var(--tint),.14);
+
+    background:rgba(12,12,12,.98);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+
+    opacity:0;
+
+    transform:translateY(-6px);
+
+    pointer-events:none;
+
+    transition:var(--transition);
+}
+
+.dropdownMenu.isOpen{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+    pointer-events:auto;
+
+}
+
+.dropdownItem{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    width:100%;
+
+    padding:10px 12px;
+
+    border-radius:10px;
+
+    border:none;
+
+    background:transparent;
+
+    color:var(--text);
+
+    font-family:inherit;
+
+    font-size:.92rem;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.dropdownItem:hover:not(:disabled){
+
+    background:rgba(212,175,55,.10);
+}
+
+.dropdownItem.isActive{
+
+    background:rgba(212,175,55,.14);
+
+    color:var(--gold);
+}
+
+.dropdownItem:disabled{
+
+    cursor:not-allowed;
+
+    opacity:.45;
+}
+
+.dropdownItem__main{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.dropdownItem__dot{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#3ddc84;
+
+    flex-shrink:0;
+}
+
+.dropdownItem:disabled .dropdownItem__dot{
+
+    background:rgba(var(--tint),.30);
+}
+
+.dropdownItem__badge{
+
+    font-size:.68rem;
+
+    font-weight:600;
+
+    letter-spacing:.04em;
+
+    text-transform:uppercase;
+
+    padding:3px 8px;
+
+    border-radius:999px;
+
+    background:rgba(var(--tint),.10);
+
+    color:rgba(var(--tint),.55);
+
+    white-space:nowrap;
 }
 
 
@@ -3425,9 +3607,9 @@ body.modalOpen{
 
 .brandLogo{
 
-    width:42px;
+    width:54px;
 
-    height:42px;
+    height:54px;
 
 }
 
