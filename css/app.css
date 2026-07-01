@@ -1,0 +1,3678 @@
+/* =====================================================
+   LaunchFuture
+   app.css
+   PART A-1
+   Foundation
+   ===================================================== */
+
+/* =====================================================
+   RESET
+   ===================================================== */
+
+*,
+*::before,
+*::after{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    min-height:100vh;
+
+    font-family:
+        "Plus Jakarta Sans",
+        sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    overflow-x:hidden;
+
+    -webkit-font-smoothing:antialiased;
+
+    text-rendering:optimizeLegibility;
+
+}
+
+img{
+
+    display:block;
+    max-width:100%;
+
+}
+
+button,
+input,
+textarea,
+select{
+
+    font:inherit;
+
+}
+
+button{
+
+    cursor:pointer;
+
+}
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+ul{
+
+    list-style:none;
+
+}
+
+/* =====================================================
+   ROOT
+   ===================================================== */
+
+:root{
+
+    --background:#050505;
+
+    --bg-grad-1:#090909;
+
+    --bg-grad-2:#050505;
+
+    --bg-grad-3:#030303;
+
+    --surface:#111214;
+
+    --surface-2:#18191d;
+
+    --surface-3:#202227;
+
+    /* RGB channel triplets used inside rgba() so the same
+       declarations can flip between dark/light themes */
+    --tint:255,255,255;
+
+    --surface-rgb:17,18,20;
+
+    --border:rgba(var(--tint),.08);
+
+    --border-hover:rgba(212,175,55,.35);
+
+    --gold:#d4af37;
+
+    --gold-light:#f4d56b;
+
+    --blue:#3b82f6;
+
+    --green:#22c55e;
+
+    --red:#ef4444;
+
+    --orange:#f59e0b;
+
+    --white:#ffffff;
+
+    --text:#ffffff;
+
+    --muted:#9ca3af;
+
+    --radius:22px;
+
+    --shadow:
+
+        0 18px 60px
+
+        rgba(0,0,0,.40);
+
+    --transition:
+
+        .25s ease;
+
+    --theme-transition:
+
+        background-color .3s ease,
+
+        color .3s ease,
+
+        border-color .3s ease;
+
+}
+
+/* =====================================================
+   LIGHT THEME
+   ===================================================== */
+
+html[data-theme="light"]{
+
+    --background:#f3f4f7;
+
+    --bg-grad-1:#eef0f4;
+
+    --bg-grad-2:#f6f7fa;
+
+    --bg-grad-3:#ffffff;
+
+    --surface:#ffffff;
+
+    --surface-2:#f5f6f9;
+
+    --surface-3:#eceef2;
+
+    --tint:15,17,22;
+
+    --surface-rgb:255,255,255;
+
+    --border:rgba(15,17,22,.10);
+
+    --border-hover:rgba(180,140,20,.45);
+
+    --white:#101114;
+
+    --text:#101114;
+
+    --muted:#5b6472;
+
+    --shadow:
+
+        0 18px 46px
+
+        rgba(20,20,30,.10);
+
+}
+
+html[data-theme="light"] #background{
+
+    opacity:.5;
+
+}
+
+html[data-theme="light"] #particles{
+
+    opacity:.10;
+
+}
+
+html[data-theme="light"] #globeContainer{
+
+    opacity:.35;
+
+}
+
+html,
+body,
+#app{
+
+    transition:var(--theme-transition);
+
+}
+
+/* =====================================================
+   LAYOUT
+   ===================================================== */
+
+#app{
+
+    position:relative;
+
+    min-height:100vh;
+
+    overflow:hidden;
+
+}
+
+.container{
+
+    width:min(
+
+        1320px,
+
+        calc(100% - 48px)
+
+    );
+
+    margin-inline:auto;
+
+}
+
+/* =====================================================
+   TYPOGRAPHY
+   ===================================================== */
+
+h1{
+
+    font-size:2rem;
+
+    font-weight:800;
+
+    line-height:1.1;
+
+}
+
+h2{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    line-height:1.1;
+
+}
+
+h3{
+
+    font-size:1.4rem;
+
+    font-weight:700;
+
+}
+
+h4{
+
+    font-size:1rem;
+
+    font-weight:700;
+
+}
+
+p{
+
+    color:var(--muted);
+
+    line-height:1.8;
+
+}
+
+/* =====================================================
+   INPUT
+   ===================================================== */
+
+input,
+textarea,
+select{
+
+    width:100%;
+
+    border-radius:16px;
+
+    border:1px solid var(--border);
+
+    background:rgba(var(--tint),.03);
+
+    color:var(--text);
+
+    padding:15px 18px;
+
+    transition:var(--transition);
+
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    outline:none;
+
+    border-color:var(--gold);
+
+    box-shadow:
+
+        0 0 0 4px
+
+        rgba(212,175,55,.12);
+
+}
+
+textarea{
+
+    resize:vertical;
+
+}
+
+/* =====================================================
+   BUTTON
+   ===================================================== */
+
+.primaryButton{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    min-height:54px;
+
+    padding:0 28px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            var(--gold),
+
+            var(--gold-light)
+
+        );
+
+    color:#111;
+
+    font-weight:700;
+
+    transition:var(--transition);
+
+}
+
+.primaryButton:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+
+        0 12px 28px
+
+        rgba(212,175,55,.25);
+
+}
+
+.secondaryButton{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    min-height:54px;
+
+    padding:0 28px;
+
+    border-radius:16px;
+
+    border:1px solid var(--border);
+
+    background:
+
+        rgba(var(--tint),.03);
+
+    color:var(--text);
+
+    transition:var(--transition);
+
+}
+
+.secondaryButton:hover{
+
+    border-color:var(--gold);
+
+    background:
+
+        rgba(212,175,55,.06);
+
+}
+
+/* =====================================================
+   CARD
+   ===================================================== */
+
+.card{
+
+    background:
+
+        rgba(var(--surface-rgb),.88);
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    border-radius:
+
+        var(--radius);
+
+    box-shadow:
+
+        var(--shadow);
+
+    backdrop-filter:
+
+        blur(18px);
+
+}
+
+/* =====================================================
+   BADGE
+   ===================================================== */
+
+.badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    font-size:.78rem;
+
+    font-weight:700;
+
+}
+
+.success{
+
+    background:
+
+        rgba(34,197,94,.12);
+
+    color:
+
+        var(--green);
+
+}
+
+.warning{
+
+    background:
+
+        rgba(245,158,11,.12);
+
+    color:
+
+        var(--orange);
+
+}
+
+.disconnected{
+
+    background:
+
+        rgba(239,68,68,.12);
+
+    color:
+
+        var(--red);
+
+}
+
+/* =====================================================
+   LaunchFuture
+   app.css
+   PART A-2
+   Background + Header + Hero
+   ===================================================== */
+
+/* =====================================================
+   BACKGROUND
+   ===================================================== */
+
+#background{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-10;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(212,175,55,.08),
+            transparent 45%
+        ),
+        linear-gradient(
+            180deg,
+            var(--bg-grad-1) 0%,
+            var(--bg-grad-2) 45%,
+            var(--bg-grad-3) 100%
+        );
+
+}
+
+
+/* =====================================================
+   GRID
+   ===================================================== */
+
+#background::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+        linear-gradient(
+
+            rgba(var(--tint),.025) 1px,
+
+            transparent 1px
+
+        ),
+
+        linear-gradient(
+
+            90deg,
+
+            rgba(var(--tint),.025) 1px,
+
+            transparent 1px
+
+        );
+
+    background-size:
+
+        80px 80px;
+
+    mask-image:
+
+        radial-gradient(
+
+            circle,
+
+            #fff,
+
+            transparent 82%
+
+        );
+
+}
+
+
+/* =====================================================
+   PARTICLES
+   ===================================================== */
+
+#particles{
+
+    position:absolute;
+
+    inset:-20%;
+
+    background-image:
+
+        radial-gradient(
+
+            rgba(255,220,120,.45) 1px,
+
+            transparent 2px
+
+        );
+
+    background-size:
+
+        160px 160px;
+
+    opacity:.22;
+
+    animation:
+
+        particlesMove
+
+        80s linear infinite;
+
+}
+
+
+/* =====================================================
+   GLOBE
+   ===================================================== */
+
+#globeContainer{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+    opacity:1;
+
+    pointer-events:none;
+
+    z-index:-9;
+
+}
+
+#globeCanvas{
+
+    display:block;
+
+    width:100% !important;
+
+    height:100% !important;
+
+}
+
+
+#globeSVG{
+
+    width:100%;
+
+    height:100%;
+
+    animation:
+
+        globeRotate
+
+        160s linear infinite;
+
+}
+
+
+#globeGrid{
+
+    fill:none;
+
+    stroke:
+
+        rgba(255,220,120,.45);
+
+    stroke-width:1.2;
+
+}
+
+
+#globeOrbit{
+
+    fill:none;
+
+    stroke:
+
+        rgba(212,175,55,.22);
+
+    stroke-width:2;
+
+    animation:
+
+        orbitRotate
+
+        40s linear infinite reverse;
+
+    transform-origin:center;
+
+}
+
+
+/* =====================================================
+   GLOW
+   ===================================================== */
+
+#globeContainer::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:18%;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            circle,
+
+            rgba(255,220,120,.20),
+
+            transparent 72%
+
+        );
+
+    filter:
+
+        blur(70px);
+
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+#topbar{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+    backdrop-filter:
+
+        blur(20px);
+
+    background:
+
+        rgba(7,7,7,.70);
+
+    border-bottom:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+/* =====================================================
+   HEADER INNER
+   ===================================================== */
+
+.topbarInner{
+
+    min-height:78px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:24px;
+
+}
+
+
+/* =====================================================
+   BRAND
+   ===================================================== */
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+}
+
+
+.brandLogo{
+
+    width:52px;
+
+    height:52px;
+
+}
+
+
+.brand h1{
+
+    font-size:1.45rem;
+
+}
+
+
+.brand span{
+
+    color:
+
+        var(--gold);
+
+}
+
+
+.brand p{
+
+    font-size:.82rem;
+
+}
+
+
+/* =====================================================
+   TOOLS
+   ===================================================== */
+
+.topbarTools{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/* =====================================================
+   GLASS ITEMS
+   ===================================================== */
+
+.dropdownToggle,
+
+.walletButton,
+
+.clockCard,
+
+.themeButton{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    height:48px;
+
+    padding:0 16px;
+
+    border-radius:16px;
+
+    border:
+
+        1px solid
+
+        rgba(var(--tint),.14);
+
+    background:
+
+        rgba(var(--tint),.06);
+
+    box-shadow:
+
+        0 2px 10px
+
+        rgba(0,0,0,.25);
+
+    color:var(--text);
+
+    transition:
+
+        var(--transition);
+
+}
+
+
+.dropdownToggle:hover,
+
+.walletButton:hover,
+
+.clockCard:hover,
+
+.themeButton:hover{
+
+    border-color:
+
+        var(--gold);
+
+    background:
+
+        rgba(212,175,55,.05);
+
+}
+
+
+.walletButton{
+
+    min-width:210px;
+
+    justify-content:space-between;
+
+}
+
+
+.clockCard{
+
+    min-width:140px;
+
+    justify-content:center;
+
+}
+
+
+.themeButton{
+
+    width:48px;
+
+    justify-content:center;
+
+}
+
+
+/* =====================================================
+   HERO
+   ===================================================== */
+
+#hero{
+
+    position:relative;
+
+    padding:
+
+        90px 0 70px;
+
+    text-align:center;
+
+}
+
+
+.heroInner{
+
+    max-width:900px;
+
+    margin:auto;
+
+}
+
+
+.heroBadge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 18px;
+
+    margin-bottom:26px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(212,175,55,.08);
+
+    border:
+
+        1px solid
+
+        rgba(212,175,55,.20);
+
+    color:
+
+        var(--gold);
+
+    font-size:.85rem;
+
+    font-weight:700;
+
+}
+
+
+.heroInner h2{
+
+    font-size:
+
+        clamp(
+
+            3rem,
+
+            6vw,
+
+            5.8rem
+
+        );
+
+    line-height:1.05;
+
+    letter-spacing:-2px;
+
+    margin-bottom:26px;
+
+}
+
+
+.heroInner h2 span{
+
+    color:
+
+        var(--gold);
+
+}
+
+
+.heroInner p{
+
+    max-width:760px;
+
+    margin:auto;
+
+    font-size:1.08rem;
+
+}
+
+
+.heroActions{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+
+    margin-top:42px;
+
+}
+
+
+/* =====================================================
+   HERO GLOW
+   ===================================================== */
+
+#hero::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    top:-240px;
+
+    transform:
+
+        translateX(-50%);
+
+    width:720px;
+
+    height:720px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            circle,
+
+            rgba(212,175,55,.12),
+
+            transparent 72%
+
+        );
+
+    filter:
+
+        blur(90px);
+
+    z-index:-1;
+
+}
+
+
+/* =====================================================
+   ANIMATION
+   ===================================================== */
+
+@keyframes globeRotate{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes orbitRotate{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(-360deg);
+
+    }
+
+}
+
+
+@keyframes particlesMove{
+
+    from{
+
+        transform:translateY(0);
+
+    }
+
+    to{
+
+        transform:translateY(220px);
+
+    }
+
+       }
+
+/* =====================================================
+   LaunchFuture
+   app.css
+   PART B-1
+   Workspace + Wizard + Preview
+   ===================================================== */
+
+
+/* =====================================================
+   MAIN
+   ===================================================== */
+
+#mainContent{
+
+    position:relative;
+
+    padding-bottom:100px;
+
+}
+
+
+/* =====================================================
+   WORKSPACE
+   ===================================================== */
+
+#workspace{
+
+    display:grid;
+
+    grid-template-columns:
+
+        minmax(0,2fr)
+
+        minmax(340px,420px);
+
+    gap:28px;
+
+    align-items:start;
+
+}
+
+
+/* =====================================================
+   LEFT
+   ===================================================== */
+
+#wizardSection{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
+
+
+/* =====================================================
+   RIGHT
+   ===================================================== */
+
+#previewSection{
+
+    position:sticky;
+
+    top:96px;
+
+}
+
+
+/* =====================================================
+   TIMELINE
+   ===================================================== */
+
+#wizardTimeline{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    padding:24px;
+
+    border-radius:22px;
+
+    background:
+
+        rgba(var(--tint),.03);
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    backdrop-filter:
+
+        blur(20px);
+
+}
+
+
+/* =====================================================
+   PROGRESS LINE
+   ===================================================== */
+
+#timelineProgress{
+
+    position:absolute;
+
+    left:8%;
+
+    right:8%;
+
+    top:43px;
+
+    height:3px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(var(--tint),.06);
+
+    overflow:hidden;
+
+}
+
+
+#timelineProgress::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    width:16%;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            var(--gold),
+
+            var(--gold-light)
+
+        );
+
+    border-radius:999px;
+
+}
+
+
+/* =====================================================
+   STEP
+   ===================================================== */
+
+.timelineStep{
+
+    position:relative;
+
+    z-index:2;
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:12px;
+
+    border:none;
+
+    background:none;
+
+    color:var(--muted);
+
+    transition:
+
+        var(--transition);
+
+}
+
+
+.timelineStep span{
+
+    width:44px;
+
+    height:44px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+
+        var(--surface);
+
+    border:
+
+        2px solid
+
+        var(--border);
+
+    font-weight:700;
+
+    transition:
+
+        var(--transition);
+
+}
+
+
+.timelineStep small{
+
+    font-size:.78rem;
+
+}
+
+
+.timelineStep.active{
+
+    color:var(--text);
+
+}
+
+
+.timelineStep.active span{
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            var(--gold),
+
+            var(--gold-light)
+
+        );
+
+    color:#111;
+
+    border-color:
+
+        var(--gold);
+
+    box-shadow:
+
+        0 0 24px
+
+        rgba(212,175,55,.30);
+
+}
+
+
+/* =====================================================
+   WIZARD CARD
+   ===================================================== */
+
+#wizardCard{
+
+    background:
+
+        rgba(var(--surface-rgb),.92);
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    border-radius:26px;
+
+    overflow:hidden;
+
+    box-shadow:
+
+        var(--shadow);
+
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+#wizardHeader{
+
+    padding:34px;
+
+    border-bottom:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+.stepBadge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 16px;
+
+    margin-bottom:18px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(212,175,55,.08);
+
+    color:
+
+        var(--gold);
+
+    border:
+
+        1px solid
+
+        rgba(212,175,55,.18);
+
+    font-weight:700;
+
+    font-size:.82rem;
+
+}
+
+
+#wizardTitle{
+
+    margin-bottom:10px;
+
+}
+
+
+#wizardDescription{
+
+    max-width:700px;
+
+}
+
+
+/* =====================================================
+   BODY
+   ===================================================== */
+
+#wizardBody{
+
+    padding:34px;
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
+
+#wizardNavigation{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:28px 34px;
+
+    border-top:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+#stepCounter{
+
+    font-weight:700;
+
+    color:var(--muted);
+
+}
+
+
+/* =====================================================
+   PREVIEW
+   ===================================================== */
+
+#previewCard{
+
+    background:
+
+        rgba(var(--surface-rgb),.92);
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    border-radius:26px;
+
+    padding:28px;
+
+    box-shadow:
+
+        var(--shadow);
+
+}
+
+
+/* =====================================================
+   PREVIEW HEADER
+   ===================================================== */
+
+#previewHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:28px;
+
+}
+
+
+/* =====================================================
+   LOGO
+   ===================================================== */
+
+#previewLogo{
+
+    width:110px;
+
+    height:110px;
+
+    margin:0 auto 24px;
+
+    border-radius:24px;
+
+    background:
+
+        rgba(var(--tint),.03);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+#previewLogo img{
+
+    width:72px;
+
+}
+
+
+/* =====================================================
+   TOKEN
+   ===================================================== */
+
+#previewTokenName{
+
+    text-align:center;
+
+    margin-bottom:26px;
+
+}
+
+
+#previewName{
+
+    margin-bottom:6px;
+
+}
+
+
+#previewSymbol{
+
+    color:var(--gold);
+
+    font-weight:700;
+
+}
+
+
+/* =====================================================
+   INFO
+   ===================================================== */
+
+#previewInfo{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:2px;
+
+}
+
+
+.previewRow{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:15px 0;
+
+    border-bottom:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+.previewRow:last-child{
+
+    border-bottom:none;
+
+}
+
+
+.previewRow span{
+
+    color:var(--muted);
+
+}
+
+
+.previewRow strong{
+
+    color:var(--text);
+
+}
+
+
+/* =====================================================
+   CALCULATOR
+   ===================================================== */
+
+#feeCalculatorButton{
+
+    margin-top:28px;
+
+    width:100%;
+
+}
+
+
+/* =====================================================
+   HIGHLIGHTS
+   ===================================================== */
+
+#highlights{
+
+    margin-top:34px;
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+
+.highlightCard{
+
+    background:
+
+        rgba(var(--surface-rgb),.90);
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    border-radius:22px;
+
+    padding:24px;
+
+    display:flex;
+
+    gap:16px;
+
+    transition:
+
+        var(--transition);
+
+}
+
+
+.highlightCard:hover{
+
+    transform:
+
+        translateY(-4px);
+
+    border-color:
+
+        var(--border-hover);
+
+}
+
+
+.highlightCard i{
+
+    color:var(--gold);
+
+    flex-shrink:0;
+
+}
+
+
+.highlightCard h4{
+
+    margin-bottom:8px;
+
+             }
+
+/* =====================================================
+   LaunchFuture
+   app.css
+   PART B-2
+   Forms + Wizard Components
+   ===================================================== */
+
+
+/* =====================================================
+   WIZARD STEP
+   ===================================================== */
+
+.wizardStep{
+
+    display:none;
+
+    animation:
+
+        fadeUp .35s ease;
+
+}
+
+.wizardStep.activeStep{
+
+    display:block;
+
+}
+
+
+/* =====================================================
+   STEP INTRO
+   ===================================================== */
+
+.stepIntro{
+
+    margin-bottom:34px;
+
+}
+
+.stepLabel{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:8px 16px;
+
+    margin-bottom:18px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(212,175,55,.10);
+
+    color:
+
+        var(--gold);
+
+    font-size:.82rem;
+
+    font-weight:700;
+
+}
+
+.stepIntro h3{
+
+    margin-bottom:10px;
+
+}
+
+
+/* =====================================================
+   FORM
+   ===================================================== */
+
+.formSection{
+
+    margin-bottom:30px;
+
+}
+
+.formGrid{
+
+    display:grid;
+
+    gap:22px;
+
+    margin-bottom:30px;
+
+}
+
+.twoColumn{
+
+    grid-template-columns:
+
+        repeat(2,1fr);
+
+}
+
+.threeColumn{
+
+    grid-template-columns:
+
+        repeat(3,1fr);
+
+}
+
+
+/* =====================================================
+   FORM GROUP
+   ===================================================== */
+
+.formGroup{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+.formGroup label{
+
+    color:var(--text);
+
+    font-weight:600;
+
+}
+
+.formGroup small{
+
+    color:var(--muted);
+
+    font-size:.78rem;
+
+}
+
+
+/* =====================================================
+   UPLOAD
+   ===================================================== */
+
+.uploadArea{
+
+    border:
+
+        2px dashed
+
+        rgba(var(--tint),.10);
+
+    border-radius:22px;
+
+    padding:28px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:18px;
+
+    transition:
+
+        var(--transition);
+
+}
+
+.uploadArea:hover{
+
+    border-color:
+
+        var(--gold);
+
+    background:
+
+        rgba(212,175,55,.04);
+
+}
+
+.uploadArea img{
+
+    width:110px;
+
+    height:110px;
+
+    object-fit:contain;
+
+    border-radius:20px;
+
+}
+
+.uploadArea input{
+
+    max-width:360px;
+
+}
+
+
+/* =====================================================
+   WALLET GRID
+   ===================================================== */
+
+#walletGrid{
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(2,1fr);
+
+    gap:18px;
+
+}
+
+
+/* =====================================================
+   WALLET OPTION
+   ===================================================== */
+
+.walletOption{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:22px;
+
+    border-radius:20px;
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    background:
+
+        rgba(var(--tint),.03);
+
+    color:var(--text);
+
+    transition:
+
+        var(--transition);
+
+}
+
+.walletOption:hover{
+
+    border-color:
+
+        var(--gold);
+
+    transform:
+
+        translateY(-3px);
+
+}
+
+.walletOption i{
+
+    color:
+
+        var(--gold);
+
+}
+
+.walletOption h4{
+
+    margin-bottom:4px;
+
+}
+
+
+/* =====================================================
+   STATUS CARD
+   ===================================================== */
+
+#walletStatusCard,
+
+.summaryCard,
+
+.healthCard,
+
+.reviewCard,
+
+.deployStatusCard,
+
+.deployResultCard,
+
+.deployConsole{
+
+    margin-top:28px;
+
+    padding:26px;
+
+    border-radius:22px;
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    background:
+
+        rgba(var(--tint),.03);
+
+}
+
+
+/* =====================================================
+   GRID
+   ===================================================== */
+
+.statusGrid,
+
+.summaryGrid,
+
+.reviewGrid{
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(2,1fr);
+
+    gap:20px;
+
+    margin-top:20px;
+
+}
+
+
+/* =====================================================
+   ITEM
+   ===================================================== */
+
+.statusItem,
+
+.reviewItem{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.statusItem label,
+
+.reviewItem label{
+
+    color:var(--muted);
+
+    font-size:.80rem;
+
+}
+
+
+/* =====================================================
+   HEALTH
+   ===================================================== */
+
+.healthBar{
+
+    margin:20px 0;
+
+    height:10px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(var(--tint),.08);
+
+    overflow:hidden;
+
+}
+
+#healthProgress{
+
+    width:100%;
+
+    height:100%;
+
+    border-radius:999px;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            var(--green),
+
+            var(--gold)
+
+        );
+
+}
+
+
+/* =====================================================
+   DETAILS
+   ===================================================== */
+
+details{
+
+    margin-bottom:18px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    background:
+
+        rgba(var(--tint),.02);
+
+}
+
+summary{
+
+    padding:20px 24px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+
+/* =====================================================
+   FEATURE
+   ===================================================== */
+
+.featureGrid{
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(2,1fr);
+
+    gap:18px;
+
+    padding:20px;
+
+}
+
+.featureCard{
+
+    display:flex;
+
+    gap:16px;
+
+    align-items:flex-start;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    background:
+
+        rgba(var(--tint),.03);
+
+    transition:
+
+        var(--transition);
+
+}
+
+.featureCard:hover{
+
+    border-color:
+
+        var(--gold);
+
+    transform:
+
+        translateY(-2px);
+
+}
+
+.featureCard input{
+
+    width:18px;
+
+    height:18px;
+
+    margin-top:3px;
+
+}
+
+
+/* =====================================================
+   REVIEW
+   ===================================================== */
+
+.reviewChecklist{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+    margin-top:28px;
+
+}
+
+.reviewChecklist label{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:14px;
+
+    cursor:pointer;
+
+}
+
+.reviewChecklist input{
+
+    width:18px;
+
+    height:18px;
+
+    margin-top:2px;
+
+}
+
+
+/* =====================================================
+   DEPLOY
+   ===================================================== */
+
+.deployStep{
+
+    display:flex;
+
+    gap:18px;
+
+    padding:20px 0;
+
+    border-bottom:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+.deployStep:last-child{
+
+    border-bottom:none;
+
+}
+
+.deployIcon{
+
+    width:50px;
+
+    height:50px;
+
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+
+        rgba(212,175,55,.10);
+
+    color:
+
+        var(--gold);
+
+}
+
+.deployStep.completed .deployIcon{
+
+    background: rgba(34,197,94,.15);
+
+    color: #22c55e;
+
+}
+
+.deployStep.active .deployIcon{
+
+    background: rgba(212,175,55,.22);
+
+    color: var(--gold);
+
+    box-shadow: 0 0 0 3px rgba(212,175,55,.15);
+}
+
+.deployStep.error .deployIcon{
+
+    background: rgba(239,68,68,.15);
+
+    color: #ef4444;
+
+}
+
+
+/* =====================================================
+   RESULT
+   ===================================================== */
+
+.resultGrid{
+
+    display:grid;
+
+    gap:18px;
+
+    margin-top:22px;
+
+}
+
+
+/* =====================================================
+   CONSOLE
+   ===================================================== */
+
+.consoleHeader{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:18px;
+
+}
+
+#deployConsoleOutput{
+
+    min-height:220px;
+
+    max-height:320px;
+
+    overflow:auto;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    background:#080808;
+
+    color:#7CFF9E;
+
+    font-family:
+
+        Consolas,
+        monospace;
+
+    font-size:.86rem;
+
+    line-height:1.8;
+
+            }
+
+/* =====================================================
+   LaunchFuture
+   app.css
+   PART C-1
+   Footer + Modal + Toast
+   ===================================================== */
+
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+#footer{
+
+    margin-top:80px;
+
+    padding:60px 0 36px;
+
+    border-top:
+
+        1px solid
+
+        rgba(var(--tint),.06);
+
+    background:
+
+        rgba(var(--tint),.015);
+
+}
+
+.footerTop{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:40px;
+
+    margin-bottom:40px;
+
+}
+
+
+.footerBrand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+
+.footerLogo{
+
+    width:58px;
+
+    height:58px;
+
+}
+
+
+.footerBrand h3{
+
+    margin-bottom:6px;
+
+}
+
+
+.footerLinks{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:26px;
+
+}
+
+
+.footerLinks a{
+
+    color:
+
+        var(--muted);
+
+    transition:
+
+        var(--transition);
+
+}
+
+
+.footerLinks a:hover{
+
+    color:
+
+        var(--gold);
+
+}
+
+
+.footerBottom{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding-top:28px;
+
+    border-top:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+    color:
+
+        var(--muted);
+
+}
+
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+
+#toastContainer{
+
+    position:fixed;
+
+    top:24px;
+
+    right:24px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    z-index:999999;
+
+}
+
+
+.toast{
+
+    display:flex;
+
+    gap:16px;
+
+    align-items:flex-start;
+
+    min-width:320px;
+
+    max-width:420px;
+
+    padding:18px;
+
+    border-radius:20px;
+
+    border:
+
+        1px solid
+
+        rgba(212,175,55,.20);
+
+    background:
+
+        rgba(var(--surface-rgb),.95);
+
+    backdrop-filter:
+
+        blur(18px);
+
+    box-shadow:
+
+        var(--shadow);
+
+}
+
+
+.toastIcon{
+
+    color:
+
+        var(--gold);
+
+    flex-shrink:0;
+
+}
+
+
+.toastContent h4{
+
+    margin-bottom:4px;
+
+}
+
+
+.toastContent p{
+
+    font-size:.86rem;
+
+}
+
+.toast--success{
+
+    border-color:rgba(34,197,94,.35);
+
+}
+
+.toast--success .toastIcon{
+
+    color:var(--green);
+
+}
+
+.toast--error{
+
+    border-color:rgba(239,68,68,.35);
+
+}
+
+.toast--error .toastIcon{
+
+    color:var(--red);
+
+}
+
+
+/* =====================================================
+   LOADING
+   ===================================================== */
+
+#loadingOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+        rgba(0,0,0,.82);
+
+    backdrop-filter:
+
+        blur(8px);
+
+    z-index:999998;
+
+}
+
+
+.loadingCard{
+
+    width:min(
+
+        360px,
+
+        calc(100% - 32px)
+
+    );
+
+    padding:42px;
+
+    text-align:center;
+
+    border-radius:26px;
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    background:
+
+        rgba(var(--surface-rgb),.95);
+
+}
+
+
+.loadingSpinner{
+
+    width:72px;
+
+    height:72px;
+
+    margin:0 auto 24px;
+
+    border-radius:50%;
+
+    border:
+
+        4px solid
+
+        rgba(var(--tint),.08);
+
+    border-top-color:
+
+        var(--gold);
+
+}
+
+
+#loadingText{
+
+    margin-top:10px;
+
+}
+
+
+/* =====================================================
+   MODAL
+   ===================================================== */
+
+#modal{
+
+    position:fixed;
+
+    inset:0;
+
+    display:grid;
+
+    place-items:center;
+
+    z-index:999997;
+
+}
+
+
+#modalBackdrop{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        rgba(0,0,0,.72);
+
+    backdrop-filter:
+
+        blur(8px);
+
+}
+
+
+#modalCard{
+
+    position:relative;
+
+    width:min(
+
+        760px,
+
+        calc(100% - 32px)
+
+    );
+
+    border-radius:26px;
+
+    overflow:hidden;
+
+    background:
+
+        rgba(var(--surface-rgb),.96);
+
+    border:
+
+        1px solid
+
+        var(--border);
+
+    box-shadow:
+
+        var(--shadow);
+
+}
+
+
+#modalHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:24px 30px;
+
+    border-bottom:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+#modalClose{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+
+        rgba(var(--tint),.04);
+
+    color:var(--text);
+
+}
+
+
+#modalBody{
+
+    padding:30px;
+
+}
+
+
+#modalFooter{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:16px;
+
+    padding:24px 30px;
+
+    border-top:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+/* =====================================================
+   MOBILE DRAWER
+   ===================================================== */
+
+#mobileDrawer{
+
+    position:fixed;
+
+    top:0;
+
+    right:0;
+
+    width:min(
+
+        360px,
+
+        90vw
+
+    );
+
+    height:100vh;
+
+    background:
+
+        var(--surface);
+
+    border-left:
+
+        1px solid
+
+        var(--border);
+
+    box-shadow:
+
+        -20px 0 60px
+
+        rgba(0,0,0,.35);
+
+    z-index:999996;
+
+}
+
+
+#drawerHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:24px;
+
+    border-bottom:
+
+        1px solid
+
+        rgba(var(--tint),.05);
+
+}
+
+
+#drawerClose{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+
+        rgba(var(--tint),.04);
+
+    color:var(--text);
+
+}
+
+
+#drawerContent{
+
+    padding:24px;
+
+}
+
+
+/* =====================================================
+   HIDDEN
+   ===================================================== */
+
+[hidden]{
+
+    display:none !important;
+
+   }
+
+body.modalOpen{
+
+    overflow:hidden;
+
+   }
+
+/* =====================================================
+   LaunchFuture
+   app.css
+   PART C-2
+   Responsive + Animation
+   ===================================================== */
+
+
+/* =====================================================
+   LARGE DESKTOP
+   ===================================================== */
+
+@media (max-width:1400px){
+
+.container{
+
+    width:min(
+
+        1240px,
+
+        calc(100% - 40px)
+
+    );
+
+}
+
+#workspace{
+
+    grid-template-columns:
+
+        minmax(0,1.8fr)
+
+        360px;
+
+}
+
+}
+
+
+/* =====================================================
+   LAPTOP
+   ===================================================== */
+
+@media (max-width:1200px){
+
+#workspace{
+
+    grid-template-columns:1fr;
+
+}
+
+#previewSection{
+
+    position:relative;
+
+    top:auto;
+
+}
+
+#highlights{
+
+    grid-template-columns:
+
+        repeat(2,1fr);
+
+}
+
+.heroInner{
+
+    max-width:760px;
+
+}
+
+}
+
+
+/* =====================================================
+   TABLET
+   ===================================================== */
+
+@media (max-width:992px){
+
+.topbarInner{
+
+    flex-direction:column;
+
+    align-items:stretch;
+
+    gap:18px;
+
+    padding:18px 0;
+
+}
+
+.topbarTools{
+
+    justify-content:space-between;
+
+}
+
+#wizardTimeline{
+
+    overflow-x:auto;
+
+    gap:24px;
+
+    scrollbar-width:none;
+
+}
+
+#wizardTimeline::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+.timelineStep{
+
+    min-width:88px;
+
+}
+
+.twoColumn,
+
+.threeColumn,
+
+.featureGrid,
+
+.statusGrid,
+
+.summaryGrid,
+
+.reviewGrid{
+
+    grid-template-columns:1fr;
+
+}
+
+#walletGrid{
+
+    grid-template-columns:1fr;
+
+}
+
+.footerTop{
+
+    flex-direction:column;
+
+}
+
+.footerBottom{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width:768px){
+
+.container{
+
+    width:calc(100% - 24px);
+
+}
+
+#hero{
+
+    padding:52px 0 42px;
+
+}
+
+.heroInner h2{
+
+    font-size:2.45rem;
+
+    letter-spacing:-1px;
+
+}
+
+.heroInner p{
+
+    font-size:.96rem;
+
+}
+
+.heroActions{
+
+    flex-direction:column;
+
+}
+
+.heroActions .primaryButton,
+
+.heroActions .secondaryButton{
+
+    width:100%;
+
+}
+
+.dropdownToggle,
+
+.walletButton,
+
+.clockCard{
+
+    width:100%;
+
+}
+
+#wizardHeader,
+
+#wizardBody,
+
+#wizardNavigation{
+
+    padding:22px;
+
+}
+
+#wizardNavigation{
+
+    position:sticky;
+
+    bottom:0;
+
+    z-index:30;
+
+    background:
+
+        rgba(var(--surface-rgb),.98);
+
+    backdrop-filter:
+
+        blur(20px);
+
+}
+
+#backButton,
+
+#nextButton{
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+#stepCounter{
+
+    min-width:72px;
+
+    text-align:center;
+
+}
+
+#previewLogo{
+
+    width:90px;
+
+    height:90px;
+
+}
+
+#previewLogo img{
+
+    width:58px;
+
+}
+
+#highlights{
+
+    grid-template-columns:1fr;
+
+}
+
+.toast{
+
+    min-width:auto;
+
+    width:100%;
+
+}
+
+#toastContainer{
+
+    left:12px;
+
+    right:12px;
+
+    top:12px;
+
+}
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+   ===================================================== */
+
+@media (max-width:480px){
+
+.brand{
+
+    gap:12px;
+
+}
+
+.brandLogo{
+
+    width:42px;
+
+    height:42px;
+
+}
+
+.brand h1{
+
+    font-size:1.2rem;
+
+}
+
+.brand p{
+
+    font-size:.72rem;
+
+}
+
+.heroBadge{
+
+    width:100%;
+
+    justify-content:center;
+
+}
+
+.heroInner h2{
+
+    font-size:2rem;
+
+}
+
+.heroInner p{
+
+    font-size:.9rem;
+
+}
+
+.stepBadge{
+
+    width:100%;
+
+    justify-content:center;
+
+}
+
+.previewRow{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:6px;
+
+}
+
+.uploadArea{
+
+    padding:20px;
+
+}
+
+.uploadArea img{
+
+    width:84px;
+
+    height:84px;
+
+}
+
+.loadingCard{
+
+    padding:28px;
+
+}
+
+}
+
+
+/* =====================================================
+   ANIMATION
+   ===================================================== */
+
+@keyframes fadeUp{
+
+from{
+
+    opacity:0;
+
+    transform:
+
+        translateY(20px);
+
+}
+
+to{
+
+    opacity:1;
+
+    transform:
+
+        translateY(0);
+
+}
+
+}
+
+@keyframes spin{
+
+from{
+
+    transform:
+
+        rotate(0deg);
+
+}
+
+to{
+
+    transform:
+
+        rotate(360deg);
+
+}
+
+}
+
+@keyframes toastIn{
+
+from{
+
+    opacity:0;
+
+    transform:
+
+        translateY(-12px);
+
+}
+
+to{
+
+    opacity:1;
+
+    transform:
+
+        translateY(0);
+
+}
+
+}
+
+@keyframes pulse{
+
+0%{
+
+    transform:scale(1);
+
+    opacity:1;
+
+}
+
+50%{
+
+    transform:scale(1.05);
+
+    opacity:.85;
+
+}
+
+100%{
+
+    transform:scale(1);
+
+    opacity:1;
+
+}
+
+}
+
+
+/* =====================================================
+   UTILITIES
+   ===================================================== */
+
+.fadeUp{
+
+    animation:
+
+        fadeUp .35s ease;
+
+}
+
+.spin{
+
+    animation:
+
+        spin 1s linear infinite;
+
+}
+
+.pulse{
+
+    animation:
+
+        pulse 2s ease infinite;
+
+}
+
+.toast{
+
+    animation:
+
+        toastIn .25s ease;
+
+}
+
+
+/* =====================================================
+   EXTRA MOBILE FIX
+   ===================================================== */
+@media (max-width:768px){
+html,body{overflow-x:hidden;}
+*{max-width:100%;}
+#background::before{background-size:48px 48px;}
+.topbarTools{flex-direction:column;align-items:stretch;}
+.walletButton,.clockCard,.dropdownToggle,.themeButton{width:100%;min-width:0;}
+#wizardTimeline{padding:16px;}
+.timelineStep small{font-size:.7rem;white-space:nowrap;}
+#wizardCard,#previewCard{border-radius:18px;}
+#previewHeader{flex-direction:column;gap:16px;align-items:flex-start;}
+.primaryButton,.secondaryButton{width:100%;}
+.formGrid{gap:16px;}
+input,select,textarea{padding:14px;}
+.highlightCard,.walletOption,.featureCard{padding:16px;}
+#modalCard{width:calc(100% - 16px);}
+}
+@media (max-width:480px){
+.container{width:calc(100% - 16px);}
+h1{font-size:1.4rem;}
+h2{font-size:1.75rem;}
+h3{font-size:1.1rem;}
+#topbar{position:relative;}
+.topbarInner{padding:12px 0;}
+#wizardHeader,#wizardBody,#wizardNavigation,#previewCard{padding:16px;}
+#timelineProgress{display:none;}
+.timelineStep span{width:36px;height:36px;}
+.previewRow{padding:12px 0;}
+.deployStep{gap:12px;}
+.deployIcon{width:42px;height:42px;}
+#deployConsoleOutput{font-size:.75rem;min-height:180px;}
+}
