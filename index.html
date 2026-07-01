@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<!-- =====================================================
+     META
+====================================================== -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#050505" name="theme-color"/>
+<meta content="LaunchFuture - Professional ERC20MAX Token Launch Platform" name="description"/>
+<meta content="LaunchFuture, ERC20MAX, Token Generator, Web3, Launchpad" name="keywords"/>
+<meta content="LaunchFuture" name="author"/>
+<!-- =====================================================
+     TITLE
+====================================================== -->
+<title>
+   LaunchFuture | ERC20MAX Launch Platform
+  </title>
+<!-- =====================================================
+     FAVICON
+====================================================== -->
+<link href="./assets/logo.png" rel="icon" type="image/png"/>
+<!-- =====================================================
+     GOOGLE FONT
+====================================================== -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- =====================================================
+     LUCIDE
+====================================================== -->
+<script src="https://unpkg.com/lucide@latest">
+</script>
+<!-- =====================================================
+     STYLE
+====================================================== -->
+<link href="./css/app.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+<link href="./css/payment.css" rel="stylesheet"/>
+<link href="./css/mobile.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+<!-- =====================================================
+     BACKGROUND
+====================================================== -->
+<div id="background">
+<div id="particles">
+</div>
+<div id="globeContainer"><canvas id="globeCanvas"></canvas></div>
+</div>
+<!-- =====================================================
+     HEADER
+====================================================== -->
+<header id="topbar">
+<div class="container">
+<div class="topbarInner">
+<!-- ========================= -->
+<!-- BRAND -->
+<!-- ========================= -->
+<a class="brand" href="#hero">
+<img alt="LaunchFuture" class="brandLogo" src="./assets/logo.png"/>
+<div>
+<h1>
+         Launch
+         <span>
+          Future
+         </span>
+</h1>
+<p>
+         Professional ERC20MAX Launch Platform
+        </p>
+</div>
+</a>
+<!-- ========================= -->
+<!-- TOOLS -->
+<!-- ========================= -->
+<div class="topbarTools">
+<!-- NETWORK -->
+<div class="dropdown">
+<button class="dropdownToggle" id="networkButton">
+<i data-lucide="network">
+</i>
+<span id="selectedNetwork">
+          EVOZ Mainnet
+         </span>
+<i data-lucide="chevron-down">
+</i>
+</button>
+<ul class="dropdownMenu" id="networkMenu">
+</ul>
+</div>
+<!-- CLOCK -->
+<div class="clockCard">
+<i data-lucide="clock-3">
+</i>
+<div>
+<span id="clockTime">
+          00:00
+         </span>
+<small>
+          Local Time
+         </small>
+</div>
+</div>
+<!-- THEME -->
+<button class="themeButton" id="themeButton">
+<i data-lucide="moon">
+</i>
+</button>
+<!-- WALLET -->
+<button class="walletButton" id="connectWalletButton">
+<i data-lucide="wallet">
+</i>
+<span>
+         Connect Wallet
+        </span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- =====================================================
+     HERO
+====================================================== -->
+<section id="hero">
+<div class="container">
+<div class="heroInner">
+<div class="heroBadge">
+<i data-lucide="sparkles">
+</i>
+<span>
+        Powered by ERC20MAX
+       </span>
+</div>
+<h2>
+       Build.
+       <span>
+        Deploy.
+       </span>
+       Verify.
+      </h2>
+<p>
+       Create secure ERC20MAX tokens with LaunchFuture.
+Deploy directly from your wallet without backend services, while enjoying a professional deployment workflow and live project preview.
+      </p>
+<div class="heroActions">
+<button class="primaryButton" id="startLaunchButton">
+<i data-lucide="rocket">
+</i>
+<span>
+         Start Launch
+        </span>
+</button>
+<button class="secondaryButton" id="documentationButton">
+<i data-lucide="book-open">
+</i>
+<span>
+         Documentation
+        </span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- =====================================================
+     MAIN
+====================================================== -->
+<main id="mainContent">
+<div class="container">
+<!-- =====================================================
+     WORKSPACE
+====================================================== -->
+<div id="workspace">
+<!-- =====================================================
+     LEFT PANEL
+====================================================== -->
+<section id="wizardSection">
+<!-- =====================================================
+     TIMELINE
+====================================================== -->
+<div id="wizardTimeline">
+<div id="timelineProgress">
+</div>
+<button class="timelineStep active" data-step="1">
+<span>
+          1
+         </span>
+<small>
+          Wallet
+         </small>
+</button>
+<button class="timelineStep" data-step="2">
+<span>
+          2
+         </span>
+<small>
+          Token
+         </small>
+</button>
+<button class="timelineStep" data-step="3">
+<span>
+          3
+         </span>
+<small>
+          Features
+         </small>
+</button>
+<button class="timelineStep" data-step="4">
+<span>
+          4
+         </span>
+<small>
+          Branding
+         </small>
+</button>
+<button class="timelineStep" data-step="5">
+<span>
+          5
+         </span>
+<small>
+          Review
+         </small>
+</button>
+<button class="timelineStep" data-step="6">
+<span>
+          6
+         </span>
+<small>
+          Deploy
+         </small>
+</button>
+</div>
+<!-- =====================================================
+     WIZARD CARD
+====================================================== -->
+<div id="wizardCard">
+<!-- ========================= -->
+<!-- HEADER -->
+<!-- ========================= -->
+<div id="wizardHeader">
+<div class="stepBadge">
+<i data-lucide="sparkles">
+</i>
+<span id="currentStepLabel">
+           STEP 1 OF 6
+          </span>
+</div>
+<h2 id="wizardTitle">
+          Connect Wallet
+         </h2>
+<p id="wizardDescription">
+          Connect your preferred EVM wallet before creating your ERC20MAX token.
+         </p>
+</div>
+<!-- ========================= -->
+<!-- BODY -->
+<!-- ========================= -->
+<div id="wizardBody">
+<!-- =====================================================
+     STEP 1
+====================================================== -->
+<section class="wizardStep activeStep" data-step="1" id="stepWallet">
+<div class="stepIntro">
+<p class="stepLabel">
+            STEP 1
+           </p>
+<h3>
+            Connect Wallet
+           </h3>
+<p>
+            Connect your preferred EVM wallet to begin creating your ERC20MAX token.
+           </p>
+</div>
+<button class="primaryButton" id="stepConnectWalletButton" type="button">
+<i data-lucide="wallet">
+</i>
+<span>
+            Connect Wallet
+           </span>
+</button>
+<p class="stepConnectHint">
+            Tap the button above and approve the connection in your wallet app (MetaMask, TokenPocket, OKX, Rabby, or any EVM wallet installed on this device).
+           </p>
+<div id="walletStatusCard">
+<h4>
+            Wallet Status
+           </h4>
+<div class="statusGrid">
+<div class="statusItem">
+<label>
+              Connection
+             </label>
+<strong id="walletConnectionStatus">
+              Disconnected
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Wallet
+             </label>
+<strong id="walletProviderName">
+              -
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Address
+             </label>
+<strong id="walletAddress">
+              -
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Network
+             </label>
+<strong id="walletNetwork">
+              -
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Native Balance
+             </label>
+<strong id="walletBalance">
+              0
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Status
+             </label>
+<span class="badge disconnected" id="walletBadge">
+              Not Connected
+             </span>
+</div>
+</div>
+</div>
+</section>
+<!-- =====================================================
+     STEP 2
+====================================================== -->
+<section class="wizardStep" data-step="2" id="stepToken">
+<div class="stepIntro">
+<p class="stepLabel">
+            STEP 2
+           </p>
+<h3>
+            ERC20MAX Configuration
+           </h3>
+<p>
+            Configure the core information for your ERC20MAX token.
+           </p>
+</div>
+<div class="formGrid twoColumn">
+<div class="formGroup">
+<label>
+             Token Name
+            </label>
+<input id="tokenName" maxlength="64" placeholder="LaunchFuture Token" type="text"/>
+</div>
+<div class="formGroup">
+<label>
+             Token Symbol
+            </label>
+<input id="tokenSymbol" maxlength="12" placeholder="LFT" type="text"/>
+</div>
+<div class="formGroup">
+<label>
+             Total Supply
+            </label>
+<input id="tokenSupply" placeholder="1000000" type="number"/>
+</div>
+<div class="formGroup">
+<label>
+             Decimals
+            </label>
+<select id="tokenDecimals">
+<option value="18">
+              18
+             </option>
+</select>
+</div>
+<div class="formGroup">
+<label>
+             Owner Address
+            </label>
+<input id="tokenOwner" placeholder="0x..." type="text"/>
+</div>
+<div class="formGroup formGroup--full">
+<label>Deploy Fee &amp; Payment Method</label>
+<div id="paymentCards" class="paymentCards">
+  <div class="paymentLoading">
+    <svg class="spinnerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+    Loading payment methods from contract...
+  </div>
+</div>
+<p class="paymentHint" id="paymentHint"></p>
+</div>
+</div>
+<div class="summaryCard">
+<h4>
+            Configuration Summary
+           </h4>
+<div class="summaryGrid">
+<div class="statusItem">
+<label>
+              Token Standard
+             </label>
+<strong>
+              ERC20MAX
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Compiler
+             </label>
+<strong>
+              0.8.24
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Network
+             </label>
+<strong id="summaryNetwork">
+              EVOZ Mainnet
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Factory
+             </label>
+<strong>
+              LaunchFuture
+             </strong>
+</div>
+</div>
+</div>
+<div class="healthCard">
+<h4>
+            Configuration Health
+           </h4>
+<div class="healthBar">
+<div id="healthProgress">
+</div>
+</div>
+<p id="healthMessage">
+            Waiting for token information...
+           </p>
+</div>
+</section>
+<!-- =====================================================
+     STEP 3
+====================================================== -->
+<section class="wizardStep" data-step="3" id="stepFeatures">
+<div class="stepIntro">
+<p class="stepLabel">
+            STEP 3
+           </p>
+<h3>
+            ERC20MAX Features
+           </h3>
+<p>
+            Select the features that will be enabled for your ERC20MAX token.
+           </p>
+</div>
+<details open="">
+<summary>
+            Core Features
+           </summary>
+<div class="featureGrid">
+<label class="featureCard">
+<input id="featureMintable" type="checkbox"/>
+<div>
+<h4>
+               Mintable
+              </h4>
+<p>
+               Owner can mint new supply.
+              </p>
+</div>
+</label>
+<label class="featureCard">
+<input id="featureBurnable" type="checkbox"/>
+<div>
+<h4>
+               Burnable
+              </h4>
+<p>
+               Allow permanent burning.
+              </p>
+</div>
+</label>
+</div>
+</details>
+<details>
+<summary>
+            Trading
+           </summary>
+<div class="featureGrid">
+<label class="featureCard">
+<input id="featureTrading" type="checkbox"/>
+<div>
+<h4>
+               Trading Enable
+              </h4>
+<p>
+               Owner controls launch.
+              </p>
+</div>
+</label>
+<label class="featureCard">
+<input id="featureTradingDelay" type="checkbox"/>
+<div>
+<h4>
+               Trading Delay
+              </h4>
+<p>
+               Delay first trading.
+              </p>
+</div>
+</label>
+</div>
+</details>
+<details>
+<summary>
+            Security
+           </summary>
+<div class="featureGrid">
+<label class="featureCard">
+<input id="featureAntiBot" type="checkbox"/>
+<div>
+<h4>
+               Anti Bot
+              </h4>
+<p>
+               Reduce sniper bots.
+              </p>
+</div>
+</label>
+<label class="featureCard">
+<input id="featureBlacklist" type="checkbox"/>
+<div>
+<h4>
+               Blacklist
+              </h4>
+<p>
+               Block malicious wallets.
+              </p>
+</div>
+</label>
+<label class="featureCard">
+<input id="featureWhitelist" type="checkbox"/>
+<div>
+<h4>
+               Whitelist
+              </h4>
+<p>
+               Approved wallets only.
+              </p>
+</div>
+</label>
+</div>
+</details>
+<details>
+<summary>
+            Limits
+           </summary>
+<div class="featureGrid">
+<label class="featureCard">
+<input id="featureMaxWallet" type="checkbox"/>
+<div>
+<h4>
+               Max Wallet
+              </h4>
+<p>
+               Limit wallet holdings.
+              </p>
+</div>
+</label>
+<label class="featureCard">
+<input id="featureMaxTx" type="checkbox"/>
+<div>
+<h4>
+               Max Transaction
+              </h4>
+<p>
+               Limit transaction size.
+              </p>
+</div>
+</label>
+</div>
+</details>
+<div class="summaryCard">
+<h4>
+            Feature Summary
+           </h4>
+<div class="summaryGrid">
+<div class="statusItem">
+<label>
+              Enabled
+             </label>
+<strong id="enabledFeatureCount">
+              0
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Estimated Size
+             </label>
+<strong id="estimatedDeploySize">
+              0 KB
+             </strong>
+</div>
+</div>
+</div>
+</section>
+<!-- =====================================================
+     STEP 4
+====================================================== -->
+<section class="wizardStep" data-step="4" id="stepMetadata">
+<div class="stepIntro">
+<p class="stepLabel">
+            STEP 4
+           </p>
+<h3>
+            Branding &amp; Metadata
+           </h3>
+<p>
+            Customize your project identity.
+           </p>
+</div>
+<div class="formSection">
+<div class="uploadArea">
+<img alt="Logo" id="logoPreview" src="./assets/logo.png"/>
+<input accept=".png,.jpg,.jpeg,.svg,.webp" id="tokenLogo" type="file"/>
+</div>
+</div>
+<div class="formGrid twoColumn">
+<div class="formGroup">
+<label>
+             Website
+            </label>
+<input id="website" type="url"/>
+</div>
+<div class="formGroup">
+<label>
+             Whitepaper
+            </label>
+<input id="whitepaper" type="url"/>
+</div>
+<div class="formGroup">
+<label>
+             Telegram
+            </label>
+<input id="telegram" type="url"/>
+</div>
+<div class="formGroup">
+<label>
+             X (Twitter)
+            </label>
+<input id="twitter" type="url"/>
+</div>
+<div class="formGroup">
+<label>
+             Discord
+            </label>
+<input id="discord" type="url"/>
+</div>
+<div class="formGroup">
+<label>
+             GitHub
+            </label>
+<input id="github" type="url"/>
+</div>
+</div>
+<div class="formSection">
+<label>
+            Description
+           </label>
+<textarea id="projectDescription" maxlength="500" rows="5">
+
+</textarea>
+</div>
+</section>
+<!-- =====================================================
+     STEP 5
+====================================================== -->
+<section class="wizardStep" data-step="5" id="stepReview">
+<div class="stepIntro">
+<p class="stepLabel">
+            STEP 5
+           </p>
+<h3>
+            Review
+           </h3>
+<p>
+            Review everything before deployment.
+           </p>
+</div>
+<div class="reviewCard">
+<h4>
+            Token Summary
+           </h4>
+<div class="reviewGrid">
+<div class="reviewItem">
+<label>
+              Name
+             </label>
+<strong id="reviewName">
+              -
+             </strong>
+</div>
+<div class="reviewItem">
+<label>
+              Symbol
+             </label>
+<strong id="reviewSymbol">
+              -
+             </strong>
+</div>
+<div class="reviewItem">
+<label>
+              Supply
+             </label>
+<strong id="reviewSupply">
+              -
+             </strong>
+</div>
+<div class="reviewItem">
+<label>
+              Decimals
+             </label>
+<strong id="reviewDecimals">
+              18
+             </strong>
+</div>
+<div class="reviewItem">
+<label>
+              Owner
+             </label>
+<strong id="reviewOwner">
+              -
+             </strong>
+</div>
+<div class="reviewItem">
+<label>
+              Network
+             </label>
+<strong id="reviewNetwork">
+              EVOZ Mainnet
+             </strong>
+</div>
+</div>
+</div>
+<div class="reviewChecklist">
+<label>
+<input id="confirmInformation" type="checkbox"/>
+<span>
+             I have reviewed all information.
+            </span>
+</label>
+<label>
+<input id="confirmOwnership" type="checkbox"/>
+<span>
+             I understand ownership permissions.
+            </span>
+</label>
+<label>
+<input id="confirmIrreversible" type="checkbox"/>
+<span>
+             Deployment cannot be reversed.
+            </span>
+</label>
+</div>
+</section>
+<!-- =====================================================
+     STEP 6
+====================================================== -->
+<section class="wizardStep" data-step="6" id="stepDeploy">
+<div class="stepIntro">
+<p class="stepLabel">
+            STEP 6
+           </p>
+<h3>
+            Deploy ERC20MAX
+           </h3>
+<p>
+            Launch your ERC20MAX token directly from your connected wallet.
+           </p>
+</div>
+<div class="deployStatusCard">
+<h4>
+            Deployment Progress
+           </h4>
+<div id="deployTimeline">
+<div class="deployStep">
+<div class="deployIcon">
+<i data-lucide="shield-check">
+</i>
+</div>
+<div>
+<strong>
+               Validation
+              </strong>
+<p>
+               Checking configuration.
+              </p>
+</div>
+</div>
+<div class="deployStep">
+<div class="deployIcon">
+<i data-lucide="wallet">
+</i>
+</div>
+<div>
+<strong>
+               Wallet Signature
+              </strong>
+<p>
+               Waiting approval.
+              </p>
+</div>
+</div>
+<div class="deployStep">
+<div class="deployIcon">
+<i data-lucide="factory">
+</i>
+</div>
+<div>
+<strong>
+               Factory Deployment
+              </strong>
+<p>
+               Creating contract.
+              </p>
+</div>
+</div>
+<div class="deployStep">
+<div class="deployIcon">
+<i data-lucide="rocket">
+</i>
+</div>
+<div>
+<strong>
+               Completed
+              </strong>
+<p>
+               Deployment finished.
+              </p>
+</div>
+</div>
+</div>
+</div>
+<button class="primaryButton large" id="deployButton">
+<i data-lucide="rocket">
+</i>
+<span>
+            Deploy ERC20MAX
+           </span>
+</button>
+<div class="deployResultCard" hidden="" id="deployResult">
+<h4>
+            Deployment Result
+           </h4>
+<div class="resultGrid">
+<div class="statusItem">
+<label>
+              Contract Address
+             </label>
+<strong id="contractAddress">
+              -
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Transaction Hash
+             </label>
+<strong id="transactionHash">
+              -
+             </strong>
+</div>
+<div class="statusItem">
+<label>
+              Block
+             </label>
+<strong id="blockNumber">
+              -
+             </strong>
+</div>
+</div>
+</div>
+<div class="deployConsole">
+<div class="consoleHeader">
+<i data-lucide="terminal">
+</i>
+<h4>
+             Deployment Console
+            </h4>
+</div>
+<pre id="deployConsoleOutput">
+
+Waiting...
+
+</pre>
+</div>
+</section>
+</div>
+<!-- END #wizardBody -->
+<div id="wizardNavigation">
+<button class="secondaryButton" disabled="" id="backButton">
+<i data-lucide="chevron-left">
+</i>
+<span>
+       Back
+      </span>
+</button>
+<div id="stepCounter">
+      1 / 6
+     </div>
+<button class="primaryButton" id="nextButton">
+<span>
+       Next
+      </span>
+<i data-lucide="chevron-right">
+</i>
+</button>
+</div>
+<!-- END #wizardNavigation -->
+</div>
+<!-- END #wizardCard -->
+</section>
+<!-- END #wizardSection -->
+<aside id="previewSection">
+<div id="previewCard">
+<!-- ========================= -->
+<!-- HEADER -->
+<!-- ========================= -->
+<div id="previewHeader">
+<div>
+<h3>
+       Live Preview
+      </h3>
+<p>
+       Realtime project information
+      </p>
+</div>
+<span class="badge success" id="previewStatus">
+      Ready
+     </span>
+</div>
+<!-- ========================= -->
+<!-- LOGO -->
+<!-- ========================= -->
+<div id="previewLogo">
+<img alt="LaunchFuture Logo" src="./assets/logo.png"/>
+</div>
+<!-- ========================= -->
+<!-- NAME -->
+<!-- ========================= -->
+<div id="previewTokenName">
+<h3 id="previewName">
+      Token Name
+     </h3>
+<p id="previewSymbol">
+      SYMBOL
+     </p>
+</div>
+<!-- ========================= -->
+<!-- INFO -->
+<!-- ========================= -->
+<div id="previewInfo">
+<div class="previewRow">
+<span>
+       Network
+      </span>
+<strong id="previewNetwork">
+       EVOZ Mainnet
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Owner
+      </span>
+<strong id="previewOwner">
+       -
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Supply
+      </span>
+<strong id="previewSupply">
+       -
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Decimals
+      </span>
+<strong id="previewDecimals">
+       18
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Features
+      </span>
+<strong id="previewFeatures">
+       0 Enabled
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Deploy Fee
+      </span>
+<strong id="previewFee">
+       Loading...
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Estimated Gas
+      </span>
+<strong id="previewGas">
+       Loading...
+      </strong>
+</div>
+<div class="previewRow">
+<span>
+       Health Score
+      </span>
+<strong id="previewHealth">
+       100%
+      </strong>
+</div>
+</div>
+<button class="secondaryButton" id="feeCalculatorButton">
+<i data-lucide="calculator">
+</i>
+<span>
+      Fee Calculator
+     </span>
+</button>
+</div>
+</aside></div>
+<!-- END #workspace -->
+<section id="highlights">
+<div class="highlightCard">
+<i data-lucide="shield-check">
+</i>
+<div>
+<h4>
+      Secure Contracts
+     </h4>
+<p>
+      ERC20MAX architecture with advanced security features.
+     </p>
+</div>
+</div>
+<div class="highlightCard">
+<i data-lucide="zap">
+</i>
+<div>
+<h4>
+      Fast Deployment
+     </h4>
+<p>
+      Deploy directly from your wallet without any backend.
+     </p>
+</div>
+</div>
+<div class="highlightCard">
+<i data-lucide="badge-check">
+</i>
+<div>
+<h4>
+      Verification Ready
+     </h4>
+<p>
+      Deployment package prepared for contract verification.
+     </p>
+</div>
+</div>
+</section></div>
+<!-- END .container -->
+</main>
+<!-- END #mainContent -->
+<footer id="footer">
+<div class="container">
+<div class="footerTop">
+<div class="footerBrand">
+<img alt="LaunchFuture" class="footerLogo" src="./assets/logo.png"/>
+<div>
+<h3>
+        LaunchFuture
+       </h3>
+<p>
+        Professional ERC20MAX Launch Platform
+       </p>
+</div>
+</div>
+<nav class="footerLinks">
+<a href="#hero">
+       Home
+      </a>
+<a href="#wizardSection">
+       Launch
+      </a>
+<a href="#previewSection">
+       Preview
+      </a>
+<a href="#">
+       Documentation
+      </a>
+<a href="#">
+       GitHub
+      </a>
+</nav>
+</div>
+<div class="footerBottom">
+<div>
+      © 2026 LaunchFuture
+     </div>
+<div>
+      ERC20MAX Engine
+     </div>
+<div>
+      Version
+      <span id="appVersion">
+       1.0.0
+      </span>
+</div>
+</div>
+</div>
+</footer>
+<!-- END .container -->
+<!-- END #mainContent -->
+<!-- =====================================================
+     TOAST
+====================================================== -->
+<div aria-live="polite" id="toastContainer">
+</div>
+<!-- =====================================================
+     LOADING
+====================================================== -->
+<div hidden="" id="loadingOverlay">
+<div class="loadingCard">
+<div class="loadingSpinner">
+</div>
+<h3>
+     Loading...
+    </h3>
+<p id="loadingText">
+     Please wait...
+    </p>
+</div>
+</div>
+<!-- =====================================================
+     GLOBAL MODAL
+====================================================== -->
+<div hidden="" id="modal">
+<div id="modalBackdrop">
+</div>
+<div id="modalCard">
+<div id="modalHeader">
+<h3 id="modalTitle">
+      LaunchFuture
+     </h3>
+<button id="modalClose">
+<i data-lucide="x">
+</i>
+</button>
+</div>
+<div id="modalBody">
+</div>
+<div id="modalFooter">
+<button class="secondaryButton" id="modalCancel">
+      Cancel
+     </button>
+<button class="primaryButton" id="modalConfirm">
+      Confirm
+     </button>
+</div>
+</div>
+</div>
+<!-- =====================================================
+     MOBILE DRAWER
+====================================================== -->
+<aside hidden="" id="mobileDrawer">
+<div id="drawerHeader">
+<h3>
+     Menu
+    </h3>
+<button id="drawerClose">
+<i data-lucide="x">
+</i>
+</button>
+</div>
+<div id="drawerContent">
+</div>
+</aside>
+<!-- =====================================================
+     TEMPLATE : TOAST
+====================================================== -->
+<template id="toastTemplate">
+<div class="toast">
+<div class="toastIcon">
+<i data-lucide="info">
+</i>
+</div>
+<div class="toastContent">
+<h4>
+      Title
+     </h4>
+<p>
+      Message
+     </p>
+</div>
+</div>
+</template>
+<!-- =====================================================
+     TEMPLATE : FEATURE BADGE
+====================================================== -->
+<template id="featureBadgeTemplate">
+<span class="featureBadge">
+    Feature
+   </span>
+</template>
+<!-- =====================================================
+     TEMPLATE : REVIEW ITEM
+====================================================== -->
+<template id="reviewTemplate">
+<div class="reviewItem">
+<label>
+     Label
+    </label>
+<strong>
+     Value
+    </strong>
+</div>
+</template>
+<!-- =====================================================
+     TEMPLATE : DEPLOY LOG
+====================================================== -->
+<template id="deployLogTemplate">
+<div class="consoleLine">
+<span class="consoleTime">
+     00:00:00
+    </span>
+<span class="consoleText">
+     Message
+    </span>
+</div>
+</template>
+<!-- =====================================================
+     SCRIPT
+====================================================== -->
+<script type="module">
+import "./js/index.js";
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.lucide) lucide.createIcons();
+});
+</script>
+<script>
+// ── Three.js Globe Animation ──────────────────────
+(function() {
+  function initGlobe() {
+    const canvas = document.getElementById("globeCanvas");
+    if (!canvas || !window.THREE) return;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+
+    // Group everything so we can reposition as one unit per breakpoint
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const setSize = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      const mobile = w < 768;
+
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+
+      // Zoom out a touch on narrow screens so the globe isn't cropped,
+      // and shift it toward the top so it sits behind the hero, not the form.
+      camera.position.z = mobile ? 3.6 : 2.8;
+      group.position.set(mobile ? 0 : 0.62, mobile ? 0.55 : 0.18, 0);
+      group.scale.setScalar(mobile ? 0.85 : 1);
+
+      camera.updateProjectionMatrix();
+    };
+
+    // Globe sphere
+    const geo = new THREE.SphereGeometry(1, 40, 40);
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0xffd86a,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.16
+    });
+    const globe = new THREE.Mesh(geo, mat);
+    group.add(globe);
+
+    // Glow ring (torus)
+    const ringGeo = new THREE.TorusGeometry(1.08, 0.003, 8, 120);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd86a, transparent: true, opacity: 0.45 });
+    const ring    = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    group.add(ring);
+
+    // Orbit ring
+    const orbitGeo = new THREE.TorusGeometry(1.32, 0.002, 8, 160);
+    const orbitMat = new THREE.MeshBasicMaterial({ color: 0xffd86a, transparent: true, opacity: 0.28 });
+    const orbit    = new THREE.Mesh(orbitGeo, orbitMat);
+    orbit.rotation.x = Math.PI / 6;
+    group.add(orbit);
+
+    // Dot particle on orbit
+    const dotGeo = new THREE.SphereGeometry(0.016, 8, 8);
+    const dotMat = new THREE.MeshBasicMaterial({ color: 0xffd86a });
+    const dot    = new THREE.Mesh(dotGeo, dotMat);
+    group.add(dot);
+    let dotAngle = 0;
+
+    // Ambient glow using a large transparent sphere
+    const glowGeo = new THREE.SphereGeometry(1.4, 20, 20);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0xffd86a, transparent: true, opacity: 0.035, side: THREE.BackSide
+    });
+    group.add(new THREE.Mesh(glowGeo, glowMat));
+
+    setSize();
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(setSize, 120);
+    });
+
+    const clock = new THREE.Clock();
+    (function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      globe.rotation.y = t * 0.08;
+      globe.rotation.x = Math.sin(t * 0.04) * 0.12;
+      orbit.rotation.z = t * 0.04;
+      dotAngle += 0.005;
+      dot.position.set(
+        Math.cos(dotAngle) * 1.32,
+        Math.sin(dotAngle * 0.5) * 0.3,
+        Math.sin(dotAngle) * 1.32
+      );
+      renderer.render(scene, camera);
+    })();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initGlobe);
+  } else {
+    initGlobe();
+  }
+})();
+</script>
+<!-- END #app -->
+</body>
+</html>
