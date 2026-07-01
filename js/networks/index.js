@@ -53,7 +53,8 @@ const savedNetwork =
 if (
 
     savedNetwork &&
-    NETWORKS[savedNetwork]
+    NETWORKS[savedNetwork] &&
+    NETWORKS[savedNetwork].status === "live"
 
 ) {
 
@@ -86,6 +87,16 @@ export function getSupportedNetworks() {
 
 }
 
+export function getLiveNetworks() {
+
+    return Object.values(
+        NETWORKS
+    ).filter(
+        network => network.status === "live"
+    );
+
+}
+
 // =====================================================
 // Set
 // =====================================================
@@ -102,6 +113,16 @@ export function setCurrentNetwork(
         throw new Error(
 
             `Unsupported network: ${key}`
+
+        );
+
+    }
+
+    if (network.status !== "live") {
+
+        throw new Error(
+
+            `${network.name} is not live yet — coming soon.`
 
         );
 

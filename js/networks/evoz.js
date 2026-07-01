@@ -3,6 +3,8 @@
 // EVOZ Mainnet Network Configuration
 // =====================================================
 
+import { createNetworkHelpers } from "./_helpers.js";
+
 const NETWORK = Object.freeze({
 
     // -------------------------------------------------
@@ -117,59 +119,18 @@ const NETWORK = Object.freeze({
 // Helpers
 // =====================================================
 
-export function getChainId() {
+const helpers = createNetworkHelpers(NETWORK);
 
-    return NETWORK.chainId;
-
-}
-
-export function getRpcUrl() {
-
-    return NETWORK.rpc[0];
-
-}
-
-export function getExplorerUrl() {
-
-    return NETWORK.explorer.url;
-
-}
-
-export function getFactoryAddress() {
-
-    return NETWORK.contracts.factory;
-
-}
-
-export function getDeployerAddress() {
-
-    return NETWORK.contracts.deployer;
-
-}
-
-export function getExchangeAddress() {
-
-    return NETWORK.contracts.exchange;
-
-}
-
-export function getTokenAddress() {
-
-    return NETWORK.contracts.token;
-
-}
-
-export function getTreasuryAddress() {
-
-    return NETWORK.treasury;
-
-}
-
-export function getAbiPath(name) {
-
-    return NETWORK.abi[name] ?? null;
-
-}
+export const getChainId          = helpers.getChainId;
+export const getRpcUrl           = helpers.getRpcUrl;
+export const getExplorerUrl      = helpers.getExplorerUrl;
+export const getFactoryAddress   = helpers.getFactoryAddress;
+export const getDeployerAddress  = helpers.getDeployerAddress;
+export const getExchangeAddress  = helpers.getExchangeAddress;
+export const getTokenAddress     = helpers.getTokenAddress;
+export const getTreasuryAddress  = helpers.getTreasuryAddress;
+export const getAbiPath          = helpers.getAbiPath;
+export const isLive              = helpers.isLive;
 
 // =====================================================
 // Export
