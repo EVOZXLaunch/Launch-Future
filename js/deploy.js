@@ -211,9 +211,65 @@ export async function deployToken(config, metadata) {
 // Helpers
 // =====================================================
 
+// Human-readable translations for the factory contract's own custom
+// errors (see abi/evoz/LFTFactory.json). When factory.js manages to
+// decode a revert down to one of these names, we can tell the user
+// exactly what's wrong instead of a generic "rejected by the network".
+const CONTRACT_ERROR_MESSAGES = {
+    SymbolExists:            "This token symbol is already taken on this network. Choose a different symbol.",
+    InvalidDeployFee:        "The deploy fee has changed on-chain since this page loaded. Please try again to use the current fee.",
+    InsufficientNativeFee:   "The amount sent doesn't match the required native deploy fee. Refresh the fee and try again.",
+    InsufficientAllowance:   "Your wallet hasn't approved enough allowance for the selected payment token.",
+    InsufficientTokenBalance:"Your wallet doesn't have enough balance of the selected payment token to cover the deploy fee.",
+    InvalidName:             "Token name is invalid — check its length and characters.",
+    InvalidSymbol:           "Token symbol is invalid — check its length and characters.",
+    InvalidSupply:           "Initial supply is invalid for this configuration.",
+    InvalidMaxSupply:        "Max supply is invalid — it must be greater than or equal to the initial supply.",
+    InvalidSecurityConfig:   "One of the security settings (max wallet %, max tx %, anti-bot blocks, or trading delay) is outside the range the contract allows. Try disabling one of those features and deploying again.",
+    InvalidPercent:          "One of the percentage values used in this configuration is outside the allowed range.",
+    InvalidTaxShares:        "Tax share percentages don't add up the way the contract expects.",
+    InvalidTreasury:         "The factory's configured treasury address is invalid. Contact the admin.",
+    InvalidTreasuryWallet:   "The treasury wallet address in this configuration is invalid.",
+    InvalidMarketingWallet:  "The marketing wallet address in this configuration is invalid.",
+    InvalidDevelopmentWallet:"The development wallet address in this configuration is invalid.",
+    InvalidLiquidityWallet:  "The liquidity wallet address in this configuration is invalid.",
+    InvalidBuybackWallet:    "The buyback wallet address in this configuration is invalid.",
+    InvalidCharityWallet:    "The charity wallet address in this configuration is invalid.",
+    BuyTaxLimit:             "Buy tax exceeds the maximum the contract allows.",
+    SellTaxLimit:            "Sell tax exceeds the maximum the contract allows.",
+    TransferTaxLimit:        "Transfer tax exceeds the maximum the contract allows.",
+    FactoryPaused:           "Token deployments are currently paused on this network. Try again later.",
+    NotNativePayment:        "The selected payment method isn't a native-coin payment. Pick an ERC-20 payment method instead.",
+    UseNativeDeploy:         "The selected payment method requires paying with the native coin, not an ERC-20 permit.",
+    UseDeployFunction:       "This payment method must go through the standard deploy flow.",
+    PaymentDisabled:         "The selected payment method is currently disabled by the factory admin. Pick another one.",
+    ZeroUtilityTokenQuote:   "Couldn't get a valid price quote for the utility token payment. Try again shortly.",
+    UtilityTokenNotReceived: "The utility token payment wasn't received by the contract. Check your token approval.",
+    InvalidExchange:         "The factory's configured exchange contract address is invalid. Contact the admin.",
+    InvalidPaymentToken:     "The configured payment token address is invalid. Contact the admin.",
+    InvalidAmount:           "The amount provided is invalid.",
+    InvalidDeployer:         "The factory's configured deployer contract address is invalid. Contact the admin.",
+    FeeTransferFailed:       "The fee payment transfer failed on-chain.",
+    BurnTransferFailed:      "The burn portion of the fee failed to transfer on-chain.",
+    TreasuryTransferFailed:  "The treasury portion of the fee failed to transfer on-chain.",
+    ReentrancyGuardReentrantCall: "The contract rejected a reentrant call. Please try again."
+};
+
 function normalizeError(error) {
     if (error?.code === 4001 || error?.code === "ACTION_REJECTED")
         return new Error("Transaction rejected by user.");
+
+    // factory.js decorates decodable reverts with the contract's own
+    // custom error name — translate that first, it's always more
+    // precise than pattern-matching a raw message string.
+    if (error?.contractErrorName) {
+        const known = CONTRACT_ERROR_MESSAGES[error.contractErrorName];
+        return new Error(
+            known
+                ? known
+                : `The contract rejected this deployment (${error.contractErrorName}).`
+        );
+    }
 
     const raw = (error?.reason || error?.shortMessage || error?.info?.error?.message || error?.message || "").toString();
 
@@ -224,11 +280,12 @@ function normalizeError(error) {
     if (/SymbolTaken|symbol.*exists/i.test(raw))
         return new Error("This token symbol is already taken. Please choose another.");
 
-    // ethers surfaces "missing revert data" / CALL_EXCEPTION when
-    // estimateGas fails but the RPC node doesn't return a decoded revert
-    // reason (common on non-standard/lesser-known RPC endpoints). The
-    // transaction would revert, but we can't say exactly why — so give
-    // the user concrete things to check instead of the raw ethers object.
+    // ethers surfaces "missing revert data" / CALL_EXCEPTION when the
+    // pre-flight simulation reverts but the RPC node doesn't return a
+    // decodable revert reason at all (common on non-standard/lesser-known
+    // RPC endpoints). We already tried to decode it in factory.js and
+    // couldn't, so give the user concrete things to check instead of the
+    // raw ethers object.
     if (error?.code === "CALL_EXCEPTION" || /missing revert data/i.test(raw)) {
         return new Error(
             "The network rejected this deployment before it could run (no reason was returned). " +

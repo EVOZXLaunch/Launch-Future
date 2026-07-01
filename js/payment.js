@@ -153,6 +153,15 @@ export function getLoadedMethods() {
     return loadedMethods;
 }
 
+// Called when switching networks — the previous chain's fees, tokens and
+// selection are meaningless on the new chain, so wipe them instead of
+// letting stale data leak into the new network's payment cards.
+export function resetPaymentMethods() {
+    loadedMethods = [];
+    selectedSymbol = null;
+    decimalsCache.clear();
+}
+
 // =====================================================
 // Render Cards
 // =====================================================
@@ -260,5 +269,6 @@ export default {
     selectPayment,
     getSelectedPayment,
     getLoadedMethods,
+    resetPaymentMethods,
     signPermit
 };

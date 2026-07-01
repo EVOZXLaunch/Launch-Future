@@ -71,13 +71,21 @@ import {
 
 import {
 
-    getCurrentNetwork
+    getCurrentNetwork,
+
+    getSupportedNetworks,
+
+    setCurrentNetwork
 
 } from "./networks/index.js";
 
 import {
 
     getFormattedBalance,
+
+    getNativeBalance,
+
+    getERC20Balance,
 
     isAddress
 
@@ -135,12 +143,14 @@ import {
 
     isSymbolAvailable,
 
-    getFactory
+    getFactory,
+
+    clearFactory
 
 } from "./factory.js";
 
 import FEATURES from "./features.js";
-import { loadPaymentMethods, renderPaymentCards, getSelectedPayment, refreshDeployFee } from "./payment.js";
+import { loadPaymentMethods, renderPaymentCards, getSelectedPayment, refreshDeployFee, resetPaymentMethods } from "./payment.js";
 import { formatUnits } from "https://esm.sh/ethers@6";
 
 
@@ -217,6 +227,20 @@ const dom = {
     wizardSteps:
 
         $$(".wizardStep"),
+
+    // network
+
+    networkButton:
+
+        $("networkButton"),
+
+    networkMenu:
+
+        $("networkMenu"),
+
+    selectedNetwork:
+
+        $("selectedNetwork"),
 
     // wallet
 
@@ -313,6 +337,10 @@ const dom = {
     previewFee:
 
         $("previewFee"),
+
+    summaryNetwork:
+
+        $("summaryNetwork"),
 
     previewFeatures:
 
@@ -443,6 +471,8 @@ async function initialize(){
         cacheFeatureInputs();
 
         bindEvents();
+
+        initNetworkSwitcher();
 
         await initializeWallet();
 
@@ -649,6 +679,140 @@ function bindEvents() {
 
 
 // =====================================================
+// NETWORK SWITCHER
+// =====================================================
+// Populates the topbar network dropdown from every network registered
+// in js/networks/index.js. Live networks are selectable; networks
+// whose factory contracts haven't been deployed yet (status:
+// "coming_soon") are shown but disabled, so the UI is already
+// multi-chain-ready — flipping a network's `status` to "live" in its
+// own config file is all it takes for it to become selectable here,
+// no other changes required.
+
+function initNetworkSwitcher() {
+
+    if (!dom.networkButton || !dom.networkMenu) return;
+
+    dom.networkButton.setAttribute("aria-haspopup", "listbox");
+    dom.networkButton.setAttribute("aria-expanded", "false");
+
+    renderNetworkMenu();
+    updateNetworkButtonLabel();
+
+    dom.networkButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleNetworkMenu();
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!dom.networkMenu.classList.contains("isOpen")) return;
+        if (dom.networkMenu.contains(e.target) || dom.networkButton.contains(e.target)) return;
+        closeNetworkMenu();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeNetworkMenu();
+    });
+}
+
+function toggleNetworkMenu() {
+    const isOpen = dom.networkMenu.classList.toggle("isOpen");
+    dom.networkButton.setAttribute("aria-expanded", String(isOpen));
+}
+
+function closeNetworkMenu() {
+    dom.networkMenu.classList.remove("isOpen");
+    dom.networkButton?.setAttribute("aria-expanded", "false");
+}
+
+function updateNetworkButtonLabel() {
+    if (dom.selectedNetwork) {
+        dom.selectedNetwork.textContent = getCurrentNetwork().name;
+    }
+}
+
+function renderNetworkMenu() {
+    const current = getCurrentNetwork();
+    const networks = getSupportedNetworks();
+
+    dom.networkMenu.innerHTML = "";
+
+    networks.forEach(network => {
+        const isLive = network.status === "live";
+        const isActive = network.key === current.key;
+
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "dropdownItem" + (isActive ? " isActive" : "");
+        item.disabled = !isLive;
+        item.dataset.networkKey = network.key;
+
+        item.innerHTML = `
+          <span class="dropdownItem__main">
+            <span class="dropdownItem__dot"></span>
+            <span>${network.name}</span>
+          </span>
+          ${isActive ? '<span class="dropdownItem__badge">Active</span>' : (!isLive ? '<span class="dropdownItem__badge">Coming Soon</span>' : "")}
+        `;
+
+        if (isLive && !isActive) {
+            item.addEventListener("click", () => handleNetworkSelect(network));
+        }
+
+        dom.networkMenu.appendChild(item);
+    });
+}
+
+async function handleNetworkSelect(network) {
+    closeNetworkMenu();
+
+    try {
+        setCurrentNetwork(network.key);
+    } catch (err) {
+        showToast({
+            title: "Unavailable",
+            message: err?.message || `${network.name} isn't available yet.`,
+            variant: "error"
+        });
+        return;
+    }
+
+    // Everything cached against the old network's factory/payment data
+    // is meaningless on the new chain — drop it so nothing leaks across.
+    clearFactory();
+    resetPaymentMethods();
+
+    updateNetworkButtonLabel();
+    renderNetworkMenu();
+    refreshPreviewAndReview();
+
+    showToast({
+        title: "Network changed",
+        message: `Switched to ${network.name}.`,
+        variant: "success"
+    });
+
+    // If a wallet is already connected, follow up by asking it to switch
+    // chains too — this is best-effort; the deploy step re-checks and
+    // prompts again right before any transaction either way.
+    if (isConnected() && Number(getChainId()) !== Number(network.chainId)) {
+        const switched = await promptNetworkSwitch(network);
+        if (!switched) {
+            showToast({
+                title: "Wallet still on old network",
+                message: `Switch your wallet to ${network.name} before deploying.`,
+                variant: "error"
+            });
+        }
+    }
+
+    if (getCurrentStep() === 2) {
+        initPaymentMethods();
+    }
+}
+
+
+// =====================================================
 // STEP NAVIGATION (wrapped so we can react to step changes)
 // =====================================================
 
@@ -807,6 +971,9 @@ function refreshPreviewAndReview() {
     // panel look out of sync with what was actually chosen.
     const selectedPayment = getSelectedPayment();
 
+    const networkName = getCurrentNetwork().name;
+    if (dom.summaryNetwork) dom.summaryNetwork.textContent = networkName;
+
     updatePreview({
         name:     data.token.name || "Token Name",
         symbol:   data.token.symbol || "SYMBOL",
@@ -815,7 +982,8 @@ function refreshPreviewAndReview() {
         decimals: data.token.decimals || 18,
         features: enabledCount,
         fee:      formatFeeForDisplay(selectedPayment),
-        gas:      lastGasEstimate ?? "Calculated at deploy"
+        gas:      lastGasEstimate ?? "Calculated at deploy",
+        network:  networkName
     });
 
     updateReview({
@@ -823,7 +991,8 @@ function refreshPreviewAndReview() {
         symbol:   data.token.symbol,
         supply:   data.token.supply,
         decimals: data.token.decimals,
-        owner:    data.token.owner
+        owner:    data.token.owner,
+        network:  networkName
     });
 }
 
@@ -1108,13 +1277,69 @@ async function handleDeploy() {
         }
     }
 
+    if (dom.deployButton) dom.deployButton.disabled = true;
+    setLoading(true, "Running pre-deploy checks...");
+    if (dom.deployConsole) dom.deployConsole.textContent = "";
+
+    // The step-2 "Next" click already checks symbol availability once,
+    // but that check can silently pass on RPC hiccups, and the wizard
+    // can be reached directly from a saved draft or the timeline without
+    // re-running it. This is also the #1 real-world cause of the vague
+    // "missing revert data" estimateGas failure, so re-check it here,
+    // right before paying, with a specific and certain message.
+    appendConsole(`> Checking symbol availability...`);
+    try {
+        const available = await isSymbolAvailable(flat.symbol);
+        if (!available) {
+            setLoading(false);
+            if (dom.deployButton) dom.deployButton.disabled = false;
+            appendConsole(`> Error: "${flat.symbol}" is already registered on this network.`);
+            showToast({
+                title: "Symbol already taken",
+                message: `"${flat.symbol}" is already deployed on this network. Choose a different symbol and try again.`,
+                variant: "error"
+            });
+            handleGoToStep(2);
+            return;
+        }
+    } catch (err) {
+        // If the check itself can't run (RPC down), don't block — the
+        // contract still enforces uniqueness at deploy time either way.
+        console.warn("Pre-deploy symbol check failed:", err);
+    }
+
+    // Balance check — the other very common silent-revert cause. Compare
+    // what the wallet actually holds against the fee the contract expects.
+    appendConsole(`> Checking wallet balance...`);
+    try {
+        const fresh = await refreshDeployFee(payment.symbol);
+        let available;
+        if (fresh.isNative) {
+            available = await getNativeBalance(state.wallet.address);
+        } else {
+            available = await getERC20Balance(fresh.token, state.wallet.address);
+        }
+        if (available < fresh.fee) {
+            setLoading(false);
+            if (dom.deployButton) dom.deployButton.disabled = false;
+            const needed = fresh.feeFormatted;
+            const have = formatUnits(available, fresh.decimals);
+            appendConsole(`> Error: Insufficient ${fresh.symbol} balance (have ${have}, need ${needed}).`);
+            showToast({
+                title: "Insufficient balance",
+                message: `You need ${needed} ${fresh.symbol} to deploy, but your wallet only has ${have}.`,
+                variant: "error"
+            });
+            return;
+        }
+    } catch (err) {
+        console.warn("Pre-deploy balance check failed:", err);
+    }
+
     const config   = buildTokenConfig({ ...data.token, features: data.features });
     const metadata = buildMetadata(data.metadata);
 
-    if (dom.deployButton) dom.deployButton.disabled = true;
     setLoading(true, "Preparing deployment...");
-
-    if (dom.deployConsole) dom.deployConsole.textContent = "";
     appendConsole(`> Deploying ${flat.symbol} (${flat.name})...`);
     appendConsole(`> Paying with ${payment.symbol}`);
     updateDeployTimeline(0);
@@ -1193,10 +1418,12 @@ async function handleDeploy() {
 
 async function openFeeCalculator() {
 
+    const networkName = getCurrentNetwork().name;
+
     openModal({
         title: "Fee Calculator",
         bodyHTML: `
-          <p class="feeCalcIntro">Live deploy fees pulled directly from the factory contract on EVOZ Mainnet. Pick any option during checkout — fees below already include the current on-chain rate.</p>
+          <p class="feeCalcIntro">Live deploy fees pulled directly from the factory contract on ${networkName}. Pick any option during checkout — fees below already include the current on-chain rate.</p>
           <div class="feeCalcLoading">
             <svg class="spinnerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" stroke-opacity=".25"/>
@@ -1220,7 +1447,7 @@ async function openFeeCalculator() {
 
         if (!methods.length) {
             body.innerHTML = `
-              <p class="feeCalcIntro">Live deploy fees pulled directly from the factory contract on EVOZ Mainnet.</p>
+              <p class="feeCalcIntro">Live deploy fees pulled directly from the factory contract on ${networkName}.</p>
               <div class="feeCalcEmpty">No payment methods are configured on this network yet.</div>`;
             return;
         }
@@ -1239,7 +1466,7 @@ async function openFeeCalculator() {
         }).join("");
 
         body.innerHTML = `
-          <p class="feeCalcIntro">Live deploy fees pulled directly from the factory contract on EVOZ Mainnet. Pick any option during checkout.</p>
+          <p class="feeCalcIntro">Live deploy fees pulled directly from the factory contract on ${networkName}. Pick any option during checkout.</p>
           <div class="feeCalcList">${rows}</div>`;
 
         if (window.lucide) lucide.createIcons();

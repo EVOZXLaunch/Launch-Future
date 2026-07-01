@@ -157,6 +157,8 @@ const ui = {
 
     previewSymbol: null,
 
+    previewNetwork: null,
+
     previewOwner: null,
 
     previewSupply: null,
@@ -312,6 +314,10 @@ export function initUI() {
     ui.previewSymbol =
 
         $("previewSymbol");
+
+    ui.previewNetwork =
+
+        $("previewNetwork");
 
     ui.previewOwner =
 
@@ -488,6 +494,48 @@ export function showStep(
         step;
 
     refreshWizard();
+
+    scrollWizardIntoView();
+
+}
+
+// =====================================================
+// Scroll
+// =====================================================
+// Every step can be a wildly different height (Step 1's short wallet
+// panel vs Step 6's long deploy console). Without this, switching
+// steps while scrolled down leaves the new step rendered off-screen —
+// the user has to manually scroll all the way back up to see its
+// title and fields, then back down again to reach Next. Scrolling the
+// wizard card to just below the sticky header on every step change
+// keeps each new step starting from the same, visible spot.
+
+function scrollWizardIntoView() {
+
+    const card =
+        document.getElementById("wizardCard");
+
+    if (!card) return;
+
+    const header =
+        document.getElementById("topbar");
+
+    const headerHeight =
+        header ? header.offsetHeight : 0;
+
+    const top =
+        card.getBoundingClientRect().top +
+        window.scrollY -
+        headerHeight -
+        16;
+
+    window.scrollTo({
+
+        top: Math.max(top, 0),
+
+        behavior: "smooth"
+
+    });
 
 }
 
@@ -1025,7 +1073,7 @@ export function updatePreview(
 
         health = "100%",
 
-        network = "EVOZ Mainnet",
+        network = "-",
 
         status = "Ready"
 
@@ -1036,6 +1084,9 @@ export function updatePreview(
 
     ui.previewSymbol &&
         (ui.previewSymbol.textContent = symbol);
+
+    ui.previewNetwork &&
+        (ui.previewNetwork.textContent = network);
 
     ui.previewOwner &&
         (ui.previewOwner.textContent = owner);
@@ -1096,7 +1147,7 @@ export function updateReview(
 
     ui.reviewNetwork &&
         (ui.reviewNetwork.textContent =
-            data.network || "EVOZ Mainnet");
+            data.network || "-");
 
 }
 

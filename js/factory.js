@@ -245,6 +245,67 @@ export async function predictTokenAddress(
 }
 
 // =====================================================
+// Error Decoding
+// =====================================================
+// Many wallets/RPC nodes surface a revert as a bare "missing revert
+// data" / CALL_EXCEPTION with no human-readable reason at all — even
+// though the actual revert bytes (the custom error selector + args)
+// are sitting right there in the error object. This pulls those bytes
+// out from wherever the wallet/provider tucked them and decodes them
+// against the factory's own ABI, so failures can be reported by their
+// real name (e.g. "InvalidSecurityConfig") instead of a generic
+// "the network rejected this" message.
+
+function extractRevertData(err) {
+
+    return (
+
+        err?.data ??
+        err?.info?.error?.data ??
+        err?.error?.data ??
+        err?.revert?.data ??
+        err?.data?.data ??
+        null
+
+    );
+
+}
+
+export function decorateContractError(contract, err) {
+
+    const data = extractRevertData(err);
+
+    if (typeof data === "string" && data.startsWith("0x") && data.length >= 10) {
+
+        try {
+
+            const parsed = contract.interface.parseError(data);
+
+            if (parsed) {
+
+                const decorated = new Error(`ContractError:${parsed.name}`);
+
+                decorated.contractErrorName = parsed.name;
+                decorated.contractErrorArgs = parsed.args;
+                decorated.cause = err;
+                decorated.originalError = err;
+
+                return decorated;
+
+            }
+
+        } catch {
+            // data wasn't a selector this ABI recognizes — fall through
+            // and hand back the original error untouched.
+        }
+
+    }
+
+    return err;
+
+}
+
+// =====================================================
 // Transaction
 // =====================================================
 
@@ -317,8 +378,14 @@ export async function deployWithNative(
     const contract =
         await getFactory();
 
-    const tx =
-        await contract.deployWithNative(
+    // Pre-flight simulation: runs the exact same call the wallet is
+    // about to be asked to sign, but without spending gas or opening a
+    // signature prompt. If the contract would revert, we find out here
+    // — with the real revert reason decoded — instead of after the
+    // user has already signed, or with an opaque "missing revert data".
+    try {
+
+        await contract.deployWithNative.staticCall(
 
             config,
 
@@ -331,6 +398,37 @@ export async function deployWithNative(
             }
 
         );
+
+    } catch (err) {
+
+        throw decorateContractError(contract, err);
+
+    }
+
+    let tx;
+
+    try {
+
+        tx =
+            await contract.deployWithNative(
+
+                config,
+
+                metadata,
+
+                {
+
+                    value
+
+                }
+
+            );
+
+    } catch (err) {
+
+        throw decorateContractError(contract, err);
+
+    }
 
     return await executeTransaction(
 
@@ -355,8 +453,9 @@ export async function deployWithPermit(
     const contract =
         await getFactory();
 
-    const tx =
-        await contract.deployWithPermit(
+    try {
+
+        await contract.deployWithPermit.staticCall(
 
             config,
 
@@ -373,6 +472,41 @@ export async function deployWithPermit(
             s
 
         );
+
+    } catch (err) {
+
+        throw decorateContractError(contract, err);
+
+    }
+
+    let tx;
+
+    try {
+
+        tx =
+            await contract.deployWithPermit(
+
+                config,
+
+                metadata,
+
+                paymentSymbol,
+
+                deadline,
+
+                v,
+
+                r,
+
+                s
+
+            );
+
+    } catch (err) {
+
+        throw decorateContractError(contract, err);
+
+    }
 
     return await executeTransaction(
 
@@ -449,6 +583,8 @@ export default {
 
     deployWithPermit,
 
-    deployCreate2
+    deployCreate2,
+
+    decorateContractError
 
 };
