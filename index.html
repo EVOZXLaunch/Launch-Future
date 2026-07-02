@@ -1,1376 +1,781 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html lang="id">
 <head>
-<!-- =====================================================
-     META
-====================================================== -->
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="#050505" name="theme-color"/>
-<meta content="LaunchFuture - Professional ERC20MAX Token Launch Platform" name="description"/>
-<meta content="LaunchFuture, ERC20MAX, Token Generator, Web3, Launchpad" name="keywords"/>
-<meta content="LaunchFuture" name="author"/>
-<!-- =====================================================
-     TITLE
-====================================================== -->
-<title>
-   LaunchFuture | ERC20MAX Launch Platform
-  </title>
-<!-- =====================================================
-     FAVICON
-====================================================== -->
-<link href="./assets/logo.png" rel="icon" type="image/png"/>
-<!-- =====================================================
-     GOOGLE FONT
-====================================================== -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<!-- =====================================================
-     LUCIDE
-====================================================== -->
-<script src="https://unpkg.com/lucide@latest">
-</script>
-<!-- =====================================================
-     STYLE
-====================================================== -->
-<link href="./css/app.css" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
-<link href="./css/payment.css" rel="stylesheet"/>
-<link href="./css/mobile.css" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaunchFuture — EVOZ Mainnet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #0B0E14;
+    --panel: #131822;
+    --panel-2: #1A2130;
+    --line: #232B3B;
+    --text: #E7EAF0;
+    --text-dim: #8A93A6;
+    --accent: #7C9EFF;
+    --accent-dim: #3B4A7A;
+    --ok: #6EE7B7;
+    --danger: #F97066;
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--accent);}
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px; border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:rgba(11,14,20,0.92); backdrop-filter:blur(8px);
+    z-index:10; flex-wrap:wrap; gap:10px;
+  }
+  .brand{font-size:18px; font-weight:700; letter-spacing:0.2px; display:flex; align-items:center; gap:10px;}
+  .pulse-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--ok);
+    box-shadow:0 0 0 0 rgba(110,231,183,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(110,231,183,0.5);}
+    70%{box-shadow:0 0 0 8px rgba(110,231,183,0);}
+    100%{box-shadow:0 0 0 0 rgba(110,231,183,0);}
+  }
+  .net-pill{
+    font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:6px;
+    padding:6px 10px; border:1px solid var(--line); border-radius:999px;
+  }
+  .btn{
+    background:var(--accent); color:#0B0E14; border:none; padding:10px 16px;
+    border-radius:8px; font-weight:600; cursor:pointer; font-size:14px;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:hover{transform:translateY(-1px); opacity:.92;}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--line);}
+  .btn.small{padding:6px 10px; font-size:12px;}
+  .btn:disabled{opacity:.4; cursor:not-allowed; transform:none;}
+
+  main{max-width:960px; margin:0 auto; padding:24px 20px 80px;}
+
+  .tabs{display:flex; gap:6px; border-bottom:1px solid var(--line); margin-bottom:24px; overflow-x:auto;}
+  .tab{
+    padding:10px 14px; font-size:14px; color:var(--text-dim); cursor:pointer;
+    border-bottom:2px solid transparent; white-space:nowrap; font-weight:500;
+  }
+  .tab.active{color:var(--text); border-bottom-color:var(--accent);}
+  .panel{display:none;}
+  .panel.active{display:block; animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  @media (max-width:640px){.grid, .grid3{grid-template-columns:1fr;}}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px;
+  }
+  .card h3{margin:0 0 4px; font-size:14px; color:var(--text-dim); font-weight:500;}
+  .card .value{font-size:22px; font-weight:600; margin-top:6px;}
+  .card .addr{font-size:12px; color:var(--text-dim); margin-top:8px; word-break:break-all;}
+
+  .section-title{font-size:16px; margin:28px 0 12px; color:var(--text); display:flex; align-items:center; justify-content:space-between;}
+  .contract-row{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .contract-row:last-child{border-bottom:none;}
+  .contract-name{color:var(--text-dim);}
+  .contract-addr{color:var(--text);}
+
+  fieldset{border:1px solid var(--line); border-radius:8px; padding:14px; margin:0 0 16px;}
+  legend{
+    padding:0 8px; font-size:13px; color:var(--text); font-weight:600;
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+  }
+  fieldset.collapsed .fs-body{display:none;}
+  .chev{transition:transform .15s ease; font-size:11px; color:var(--text-dim);}
+  fieldset.collapsed .chev{transform:rotate(-90deg);}
+
+  label{display:block; font-size:13px; color:var(--text-dim); margin:12px 0 6px;}
+  label.inline{display:flex; align-items:center; gap:8px; margin:10px 0; font-size:13px; color:var(--text);}
+  label.inline input[type=checkbox]{width:auto;}
+  input, select{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    padding:10px 12px; border-radius:8px; font-size:14px; font-family:'JetBrains Mono',monospace;
+  }
+  input::placeholder{color:#4C5568;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+  @media (max-width:640px){.row2,.row3{grid-template-columns:1fr;}}
+
+  .form-actions{margin-top:18px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .hint{font-size:12px; color:var(--text-dim); margin-top:4px;}
+  .quote{font-size:13px; color:var(--ok); margin-top:10px;}
+
+  .notice{
+    background:var(--panel-2); border:1px solid var(--accent-dim); border-radius:8px;
+    padding:12px 14px; font-size:13px; color:var(--text-dim); margin-bottom:16px;
+  }
+  .notice strong{color:var(--accent);}
+  .notice.warn{border-color:#5A3A2A; }
+  .notice.warn strong{color:#F0B96A;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{text-align:left; padding:8px 6px; border-bottom:1px solid var(--line);}
+  th{color:var(--text-dim); font-weight:500;}
+  td.mono{font-size:12px;}
+
+  #toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--panel-2); border:1px solid var(--line); padding:12px 18px; border-radius:8px;
+    font-size:13px; opacity:0; pointer-events:none; transition:all .25s ease; max-width:90vw; z-index:50;
+  }
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  #toast.err{border-color:var(--danger); color:var(--danger);}
+  #toast.ok{border-color:var(--ok); color:var(--ok);}
+
+  .spinner{
+    display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.25);
+    border-top-color:var(--text); border-radius:50%; animation:spin .7s linear infinite; margin-right:6px; vertical-align:-2px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
 </head>
 <body>
-<div id="app">
-<!-- =====================================================
-     BACKGROUND
-====================================================== -->
-<div id="background">
-<div id="particles">
-</div>
-<div id="globeContainer"><canvas id="globeCanvas"></canvas></div>
-</div>
-<!-- =====================================================
-     HEADER
-====================================================== -->
-<header id="topbar">
-<div class="container">
-<div class="topbarInner">
-<!-- ========================= -->
-<!-- BRAND -->
-<!-- ========================= -->
-<a class="brand" href="#hero">
-<img alt="LaunchFuture" class="brandLogo" src="./assets/logo.png"/>
-<div>
-<h1>
-         Launch
-         <span>
-          Future
-         </span>
-</h1>
-<p>
-         Professional ERC20MAX Launch Platform
-        </p>
-</div>
-</a>
-<!-- ========================= -->
-<!-- TOOLS -->
-<!-- ========================= -->
-<div class="topbarTools">
-<!-- NETWORK -->
-<div class="dropdown">
-<button class="dropdownToggle" id="networkButton">
-<i data-lucide="network">
-</i>
-<span id="selectedNetwork">
-          EVOZ Mainnet
-         </span>
-<i data-lucide="chevron-down">
-</i>
-</button>
-<ul class="dropdownMenu" id="networkMenu">
-</ul>
-</div>
-<!-- CLOCK -->
-<div class="clockCard">
-<i data-lucide="clock-3">
-</i>
-<div>
-<span id="clockTime">
-          00:00
-         </span>
-<small>
-          Local Time
-         </small>
-</div>
-</div>
-<!-- THEME -->
-<button class="themeButton" id="themeButton">
-<i data-lucide="moon">
-</i>
-</button>
-<!-- WALLET -->
-<button class="walletButton" id="connectWalletButton">
-<i data-lucide="wallet">
-</i>
-<span>
-         Connect Wallet
-        </span>
-</button>
-</div>
-</div>
-</div>
-</header>
-<!-- =====================================================
-     HERO
-====================================================== -->
-<section id="hero">
-<div class="container">
-<div class="heroInner">
-<div class="heroBadge">
-<i data-lucide="sparkles">
-</i>
-<span>
-        Powered by ERC20MAX
-       </span>
-</div>
-<h2>
-       Build.
-       <span>
-        Deploy.
-       </span>
-       Verify.
-      </h2>
-<p>
-       Create secure ERC20MAX tokens with LaunchFuture.
-Deploy directly from your wallet without backend services, while enjoying a professional deployment workflow and live project preview.
-      </p>
-<div class="heroActions">
-<button class="primaryButton" id="startLaunchButton">
-<i data-lucide="rocket">
-</i>
-<span>
-         Start Launch
-        </span>
-</button>
-<button class="secondaryButton" id="documentationButton">
-<i data-lucide="book-open">
-</i>
-<span>
-         Documentation
-        </span>
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- =====================================================
-     MAIN
-====================================================== -->
-<main id="mainContent">
-<div class="container">
-<!-- =====================================================
-     WORKSPACE
-====================================================== -->
-<div id="workspace">
-<!-- =====================================================
-     LEFT PANEL
-====================================================== -->
-<section id="wizardSection">
-<!-- =====================================================
-     TIMELINE
-====================================================== -->
-<div id="wizardTimeline">
-<div id="timelineProgress">
-</div>
-<button class="timelineStep active" data-step="1">
-<span>
-          1
-         </span>
-<small>
-          Wallet
-         </small>
-</button>
-<button class="timelineStep" data-step="2">
-<span>
-          2
-         </span>
-<small>
-          Token
-         </small>
-</button>
-<button class="timelineStep" data-step="3">
-<span>
-          3
-         </span>
-<small>
-          Features
-         </small>
-</button>
-<button class="timelineStep" data-step="4">
-<span>
-          4
-         </span>
-<small>
-          Branding
-         </small>
-</button>
-<button class="timelineStep" data-step="5">
-<span>
-          5
-         </span>
-<small>
-          Review
-         </small>
-</button>
-<button class="timelineStep" data-step="6">
-<span>
-          6
-         </span>
-<small>
-          Deploy
-         </small>
-</button>
-</div>
-<!-- =====================================================
-     WIZARD CARD
-====================================================== -->
-<div id="wizardCard">
-<!-- ========================= -->
-<!-- HEADER -->
-<!-- ========================= -->
-<div id="wizardHeader">
-<div class="stepBadge">
-<i data-lucide="sparkles">
-</i>
-<span id="currentStepLabel">
-           STEP 1 OF 6
-          </span>
-</div>
-<h2 id="wizardTitle">
-          Connect Wallet
-         </h2>
-<p id="wizardDescription">
-          Connect your preferred EVM wallet before creating your ERC20MAX token.
-         </p>
-</div>
-<!-- ========================= -->
-<!-- BODY -->
-<!-- ========================= -->
-<div id="wizardBody">
-<!-- =====================================================
-     STEP 1
-====================================================== -->
-<section class="wizardStep activeStep" data-step="1" id="stepWallet">
-<div class="stepIntro">
-<p class="stepLabel">
-            STEP 1
-           </p>
-<h3>
-            Connect Wallet
-           </h3>
-<p>
-            Connect your preferred EVM wallet to begin creating your ERC20MAX token.
-           </p>
-</div>
-<button class="primaryButton" id="stepConnectWalletButton" type="button">
-<i data-lucide="wallet">
-</i>
-<span>
-            Connect Wallet
-           </span>
-</button>
-<p class="stepConnectHint">
-            Tap the button above and approve the connection in your wallet app (MetaMask, TokenPocket, OKX, Rabby, or any EVM wallet installed on this device).
-           </p>
-<div id="walletStatusCard">
-<h4>
-            Wallet Status
-           </h4>
-<div class="statusGrid">
-<div class="statusItem">
-<label>
-              Connection
-             </label>
-<strong id="walletConnectionStatus">
-              Disconnected
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Wallet
-             </label>
-<strong id="walletProviderName">
-              -
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Address
-             </label>
-<strong id="walletAddress">
-              -
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Network
-             </label>
-<strong id="walletNetwork">
-              -
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Native Balance
-             </label>
-<strong id="walletBalance">
-              0
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Status
-             </label>
-<span class="badge disconnected" id="walletBadge">
-              Not Connected
-             </span>
-</div>
-</div>
-</div>
-</section>
-<!-- =====================================================
-     STEP 2
-====================================================== -->
-<section class="wizardStep" data-step="2" id="stepToken">
-<div class="stepIntro">
-<p class="stepLabel">
-            STEP 2
-           </p>
-<h3>
-            ERC20MAX Configuration
-           </h3>
-<p>
-            Configure the core information for your ERC20MAX token.
-           </p>
-</div>
-<div class="formGrid twoColumn">
-<div class="formGroup">
-<label>
-             Token Name
-            </label>
-<input id="tokenName" maxlength="64" placeholder="LaunchFuture Token" type="text"/>
-</div>
-<div class="formGroup">
-<label>
-             Token Symbol
-            </label>
-<input id="tokenSymbol" maxlength="12" placeholder="LFT" type="text"/>
-</div>
-<div class="formGroup">
-<label>
-             Total Supply
-            </label>
-<input id="tokenSupply" placeholder="1000000" type="number"/>
-</div>
-<div class="formGroup">
-<label>
-             Decimals
-            </label>
-<select id="tokenDecimals">
-<option value="18">
-              18
-             </option>
-</select>
-</div>
-<div class="formGroup">
-<label>
-             Owner Address
-            </label>
-<input id="tokenOwner" placeholder="0x..." type="text"/>
-</div>
-<div class="formGroup formGroup--full">
-<label>Deploy Fee &amp; Payment Method</label>
-<div id="paymentCards" class="paymentCards">
-  <div class="paymentLoading">
-    <svg class="spinnerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-    </svg>
-    Loading payment methods from contract...
+
+<header>
+  <div class="brand"><span class="pulse-dot"></span> LaunchFuture</div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div class="net-pill" id="netPill">● EVOZ Mainnet · 805</div>
+    <button class="btn" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
   </div>
-</div>
-<p class="paymentHint" id="paymentHint"></p>
-</div>
-</div>
-<div class="summaryCard">
-<h4>
-            Configuration Summary
-           </h4>
-<div class="summaryGrid">
-<div class="statusItem">
-<label>
-              Token Standard
-             </label>
-<strong>
-              ERC20MAX
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Compiler
-             </label>
-<strong>
-              0.8.24
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Network
-             </label>
-<strong id="summaryNetwork">
-              EVOZ Mainnet
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Factory
-             </label>
-<strong>
-              LaunchFuture
-             </strong>
-</div>
-</div>
-</div>
-<div class="healthCard">
-<h4>
-            Configuration Health
-           </h4>
-<div class="healthBar">
-<div id="healthProgress">
-</div>
-</div>
-<p id="healthMessage">
-            Waiting for token information...
-           </p>
-</div>
-</section>
-<!-- =====================================================
-     STEP 3
-====================================================== -->
-<section class="wizardStep" data-step="3" id="stepFeatures">
-<div class="stepIntro">
-<p class="stepLabel">
-            STEP 3
-           </p>
-<h3>
-            ERC20MAX Features
-           </h3>
-<p>
-            Select the features that will be enabled for your ERC20MAX token.
-           </p>
-</div>
-<details open="">
-<summary>
-            Core Features
-           </summary>
-<div class="featureGrid">
-<label class="featureCard">
-<input id="featureMintable" type="checkbox"/>
-<div>
-<h4>
-               Mintable
-              </h4>
-<p>
-               Owner can mint new supply.
-              </p>
-</div>
-</label>
-<label class="featureCard">
-<input id="featureBurnable" type="checkbox"/>
-<div>
-<h4>
-               Burnable
-              </h4>
-<p>
-               Allow permanent burning.
-              </p>
-</div>
-</label>
-</div>
-</details>
-<details>
-<summary>
-            Trading
-           </summary>
-<div class="featureGrid">
-<label class="featureCard">
-<input id="featureTrading" type="checkbox"/>
-<div>
-<h4>
-               Trading Enable
-              </h4>
-<p>
-               Owner controls launch.
-              </p>
-</div>
-</label>
-<label class="featureCard">
-<input id="featureTradingDelay" type="checkbox"/>
-<div>
-<h4>
-               Trading Delay
-              </h4>
-<p>
-               Delay first trading.
-              </p>
-</div>
-</label>
-</div>
-</details>
-<details>
-<summary>
-            Security
-           </summary>
-<div class="featureGrid">
-<label class="featureCard">
-<input id="featureAntiBot" type="checkbox"/>
-<div>
-<h4>
-               Anti Bot
-              </h4>
-<p>
-               Reduce sniper bots.
-              </p>
-</div>
-</label>
-<label class="featureCard">
-<input id="featureBlacklist" type="checkbox"/>
-<div>
-<h4>
-               Blacklist
-              </h4>
-<p>
-               Block malicious wallets.
-              </p>
-</div>
-</label>
-<label class="featureCard">
-<input id="featureWhitelist" type="checkbox"/>
-<div>
-<h4>
-               Whitelist
-              </h4>
-<p>
-               Approved wallets only.
-              </p>
-</div>
-</label>
-</div>
-</details>
-<details>
-<summary>
-            Limits
-           </summary>
-<div class="featureGrid">
-<label class="featureCard">
-<input id="featureMaxWallet" type="checkbox"/>
-<div>
-<h4>
-               Max Wallet
-              </h4>
-<p>
-               Limit wallet holdings.
-              </p>
-</div>
-</label>
-<label class="featureCard">
-<input id="featureMaxTx" type="checkbox"/>
-<div>
-<h4>
-               Max Transaction
-              </h4>
-<p>
-               Limit transaction size.
-              </p>
-</div>
-</label>
-</div>
-</details>
-<div class="summaryCard">
-<h4>
-            Feature Summary
-           </h4>
-<div class="summaryGrid">
-<div class="statusItem">
-<label>
-              Enabled
-             </label>
-<strong id="enabledFeatureCount">
-              0
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Estimated Size
-             </label>
-<strong id="estimatedDeploySize">
-              0 KB
-             </strong>
-</div>
-</div>
-</div>
-</section>
-<!-- =====================================================
-     STEP 4
-====================================================== -->
-<section class="wizardStep" data-step="4" id="stepMetadata">
-<div class="stepIntro">
-<p class="stepLabel">
-            STEP 4
-           </p>
-<h3>
-            Branding &amp; Metadata
-           </h3>
-<p>
-            Customize your project identity.
-           </p>
-</div>
-<div class="formSection">
-<div class="uploadArea">
-<img alt="Logo" id="logoPreview" src="./assets/logo.png"/>
-<input accept=".png,.jpg,.jpeg,.svg,.webp" id="tokenLogo" type="file"/>
-</div>
-</div>
-<div class="formGrid twoColumn">
-<div class="formGroup">
-<label>
-             Website
-            </label>
-<input id="website" type="url"/>
-</div>
-<div class="formGroup">
-<label>
-             Whitepaper
-            </label>
-<input id="whitepaper" type="url"/>
-</div>
-<div class="formGroup">
-<label>
-             Telegram
-            </label>
-<input id="telegram" type="url"/>
-</div>
-<div class="formGroup">
-<label>
-             X (Twitter)
-            </label>
-<input id="twitter" type="url"/>
-</div>
-<div class="formGroup">
-<label>
-             Discord
-            </label>
-<input id="discord" type="url"/>
-</div>
-<div class="formGroup">
-<label>
-             GitHub
-            </label>
-<input id="github" type="url"/>
-</div>
-</div>
-<div class="formSection">
-<label>
-            Description
-           </label>
-<textarea id="projectDescription" maxlength="500" rows="5">
+</header>
 
-</textarea>
-</div>
-</section>
-<!-- =====================================================
-     STEP 5
-====================================================== -->
-<section class="wizardStep" data-step="5" id="stepReview">
-<div class="stepIntro">
-<p class="stepLabel">
-            STEP 5
-           </p>
-<h3>
-            Review
-           </h3>
-<p>
-            Review everything before deployment.
-           </p>
-</div>
-<div class="reviewCard">
-<h4>
-            Token Summary
-           </h4>
-<div class="reviewGrid">
-<div class="reviewItem">
-<label>
-              Name
-             </label>
-<strong id="reviewName">
-              -
-             </strong>
-</div>
-<div class="reviewItem">
-<label>
-              Symbol
-             </label>
-<strong id="reviewSymbol">
-              -
-             </strong>
-</div>
-<div class="reviewItem">
-<label>
-              Supply
-             </label>
-<strong id="reviewSupply">
-              -
-             </strong>
-</div>
-<div class="reviewItem">
-<label>
-              Decimals
-             </label>
-<strong id="reviewDecimals">
-              18
-             </strong>
-</div>
-<div class="reviewItem">
-<label>
-              Owner
-             </label>
-<strong id="reviewOwner">
-              -
-             </strong>
-</div>
-<div class="reviewItem">
-<label>
-              Network
-             </label>
-<strong id="reviewNetwork">
-              EVOZ Mainnet
-             </strong>
-</div>
-</div>
-</div>
-<div class="reviewChecklist">
-<label>
-<input id="confirmInformation" type="checkbox"/>
-<span>
-             I have reviewed all information.
-            </span>
-</label>
-<label>
-<input id="confirmOwnership" type="checkbox"/>
-<span>
-             I understand ownership permissions.
-            </span>
-</label>
-<label>
-<input id="confirmIrreversible" type="checkbox"/>
-<span>
-             Deployment cannot be reversed.
-            </span>
-</label>
-</div>
-</section>
-<!-- =====================================================
-     STEP 6
-====================================================== -->
-<section class="wizardStep" data-step="6" id="stepDeploy">
-<div class="stepIntro">
-<p class="stepLabel">
-            STEP 6
-           </p>
-<h3>
-            Deploy ERC20MAX
-           </h3>
-<p>
-            Launch your ERC20MAX token directly from your connected wallet.
-           </p>
-</div>
-<div class="deployStatusCard">
-<h4>
-            Deployment Progress
-           </h4>
-<div id="deployTimeline">
-<div class="deployStep">
-<div class="deployIcon">
-<i data-lucide="shield-check">
-</i>
-</div>
-<div>
-<strong>
-               Validation
-              </strong>
-<p>
-               Checking configuration.
-              </p>
-</div>
-</div>
-<div class="deployStep">
-<div class="deployIcon">
-<i data-lucide="wallet">
-</i>
-</div>
-<div>
-<strong>
-               Wallet Signature
-              </strong>
-<p>
-               Waiting approval.
-              </p>
-</div>
-</div>
-<div class="deployStep">
-<div class="deployIcon">
-<i data-lucide="factory">
-</i>
-</div>
-<div>
-<strong>
-               Factory Deployment
-              </strong>
-<p>
-               Creating contract.
-              </p>
-</div>
-</div>
-<div class="deployStep">
-<div class="deployIcon">
-<i data-lucide="rocket">
-</i>
-</div>
-<div>
-<strong>
-               Completed
-              </strong>
-<p>
-               Deployment finished.
-              </p>
-</div>
-</div>
-</div>
-</div>
-<button class="primaryButton large" id="deployButton">
-<i data-lucide="rocket">
-</i>
-<span>
-            Deploy ERC20MAX
-           </span>
-</button>
-<div class="deployResultCard" hidden="" id="deployResult">
-<h4>
-            Deployment Result
-           </h4>
-<div class="resultGrid">
-<div class="statusItem">
-<label>
-              Contract Address
-             </label>
-<strong id="contractAddress">
-              -
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Transaction Hash
-             </label>
-<strong id="transactionHash">
-              -
-             </strong>
-</div>
-<div class="statusItem">
-<label>
-              Block
-             </label>
-<strong id="blockNumber">
-              -
-             </strong>
-</div>
-</div>
-</div>
-<div class="deployConsole">
-<div class="consoleHeader">
-<i data-lucide="terminal">
-</i>
-<h4>
-             Deployment Console
-            </h4>
-</div>
-<pre id="deployConsoleOutput">
+<main>
+  <div class="notice warn" id="rpcWarning">
+    <strong>Perlu diisi:</strong> RPC URL &amp; block explorer EVOZ Mainnet belum dikonfigurasi
+    (cari di <span class="mono">CONFIG.chain</span> pada script). Wallet connect &amp; auto-switch
+    jaringan tidak akan bekerja penuh sampai ini diisi.
+  </div>
 
-Waiting...
+  <div class="tabs">
+    <div class="tab active" data-tab="overview" onclick="showTab('overview')">Overview</div>
+    <div class="tab" data-tab="launch" onclick="showTab('launch')">Launch Token</div>
+    <div class="tab" data-tab="exchange" onclick="showTab('exchange')">Beli LFT</div>
+    <div class="tab" data-tab="wallet" onclick="showTab('wallet')">Wallet Saya</div>
+  </div>
 
-</pre>
-</div>
-</section>
-</div>
-<!-- END #wizardBody -->
-<div id="wizardNavigation">
-<button class="secondaryButton" disabled="" id="backButton">
-<i data-lucide="chevron-left">
-</i>
-<span>
-       Back
-      </span>
-</button>
-<div id="stepCounter">
-      1 / 6
-     </div>
-<button class="primaryButton" id="nextButton">
-<span>
-       Next
-      </span>
-<i data-lucide="chevron-right">
-</i>
-</button>
-</div>
-<!-- END #wizardNavigation -->
-</div>
-<!-- END #wizardCard -->
-</section>
-<!-- END #wizardSection -->
-<aside id="previewSection">
-<div id="previewCard">
-<!-- ========================= -->
-<!-- HEADER -->
-<!-- ========================= -->
-<div id="previewHeader">
-<div>
-<h3>
-       Live Preview
-      </h3>
-<p>
-       Realtime project information
-      </p>
-</div>
-<span class="badge success" id="previewStatus">
-      Ready
-     </span>
-</div>
-<!-- ========================= -->
-<!-- LOGO -->
-<!-- ========================= -->
-<div id="previewLogo">
-<img alt="LaunchFuture Logo" src="./assets/logo.png"/>
-</div>
-<!-- ========================= -->
-<!-- NAME -->
-<!-- ========================= -->
-<div id="previewTokenName">
-<h3 id="previewName">
-      Token Name
-     </h3>
-<p id="previewSymbol">
-      SYMBOL
-     </p>
-</div>
-<!-- ========================= -->
-<!-- INFO -->
-<!-- ========================= -->
-<div id="previewInfo">
-<div class="previewRow">
-<span>
-       Network
-      </span>
-<strong id="previewNetwork">
-       EVOZ Mainnet
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Owner
-      </span>
-<strong id="previewOwner">
-       -
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Supply
-      </span>
-<strong id="previewSupply">
-       -
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Decimals
-      </span>
-<strong id="previewDecimals">
-       18
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Features
-      </span>
-<strong id="previewFeatures">
-       0 Enabled
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Deploy Fee
-      </span>
-<strong id="previewFee">
-       Loading...
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Estimated Gas
-      </span>
-<strong id="previewGas">
-       Loading...
-      </strong>
-</div>
-<div class="previewRow">
-<span>
-       Health Score
-      </span>
-<strong id="previewHealth">
-       100%
-      </strong>
-</div>
-</div>
-<button class="secondaryButton" id="feeCalculatorButton">
-<i data-lucide="calculator">
-</i>
-<span>
-      Fee Calculator
-     </span>
-</button>
-</div>
-</aside></div>
-<!-- END #workspace -->
-<section id="highlights">
-<div class="highlightCard">
-<i data-lucide="shield-check">
-</i>
-<div>
-<h4>
-      Secure Contracts
-     </h4>
-<p>
-      ERC20MAX architecture with advanced security features.
-     </p>
-</div>
-</div>
-<div class="highlightCard">
-<i data-lucide="zap">
-</i>
-<div>
-<h4>
-      Fast Deployment
-     </h4>
-<p>
-      Deploy directly from your wallet without any backend.
-     </p>
-</div>
-</div>
-<div class="highlightCard">
-<i data-lucide="badge-check">
-</i>
-<div>
-<h4>
-      Verification Ready
-     </h4>
-<p>
-      Deployment package prepared for contract verification.
-     </p>
-</div>
-</div>
-</section></div>
-<!-- END .container -->
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <div class="grid3">
+      <div class="card">
+        <h3>Treasury Balance</h3>
+        <div class="value mono" id="treasuryBalance">—</div>
+        <div class="addr mono">0x50Cd...90c5C</div>
+      </div>
+      <div class="card">
+        <h3>Total Token Diluncurkan</h3>
+        <div class="value mono" id="totalDeployed">—</div>
+        <div class="addr">via LFTFactory</div>
+      </div>
+      <div class="card">
+        <h3>Block Terkini</h3>
+        <div class="value mono" id="blockNumber">—</div>
+        <div class="addr">EVOZ Mainnet · Chain ID 805</div>
+      </div>
+    </div>
+
+    <div class="section-title">Kontrak Terdaftar</div>
+    <div class="card">
+      <div class="contract-row"><span class="contract-name">Treasury</span><a class="contract-addr mono" target="_blank" href="https://evozscan.com/address/0x50Cd30Ff7f0fbBD9d0FDe1F60DE8c52D6F390c5C">0x50Cd30Ff7f0fbBD9d0FDe1F60DE8c52D6F390c5C</a></div>
+      <div class="contract-row"><span class="contract-name">LaunchFutureToken (LFT)</span><a class="contract-addr mono" target="_blank" href="https://evozscan.com/address/0x62B9559F193d111aF92d9a5604d79024BFB1C847">0x62B9559F193d111aF92d9a5604d79024BFB1C847</a></div>
+      <div class="contract-row"><span class="contract-name">LaunchFutureExchange</span><a class="contract-addr mono" target="_blank" href="https://evozscan.com/address/0x9680B43F695d5245062e59CCA92ad92DE5aed56e">0x9680B43F695d5245062e59CCA92ad92DE5aed56e</a></div>
+      <div class="contract-row"><span class="contract-name">LFTDeployer</span><a class="contract-addr mono" target="_blank" href="https://evozscan.com/address/0x3f81E785628D452A8Aae1536D15A3586B490F0c5">0x3f81E785628D452A8Aae1536D15A3586B490F0c5</a></div>
+      <div class="contract-row"><span class="contract-name">LFTFactory</span><a class="contract-addr mono" target="_blank" href="https://evozscan.com/address/0xcd86Ca358283f06581365635372E5bF0D30271D3">0xcd86Ca358283f06581365635372E5bF0D30271D3</a></div>
+    </div>
+
+    <div class="section-title">Token Terbaru Diluncurkan</div>
+    <div class="card">
+      <table id="recentTokensTable">
+        <thead><tr><th>Nama</th><th>Simbol</th><th>Creator</th><th>Supply Awal</th></tr></thead>
+        <tbody><tr><td colspan="4" class="hint">Hubungkan wallet untuk memuat data.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LAUNCH TOKEN -->
+  <div class="panel" id="panel-launch">
+    <div class="notice">
+      Deploy token ERC20Max baru lewat <span class="mono">LFTFactory.deployWithNative()</span>,
+      dibayar pakai EVOZ native. Biaya deploy diambil otomatis dari kontrak (fee "NATIVE").
+    </div>
+
+    <fieldset>
+      <legend>Informasi Dasar</legend>
+      <div class="fs-body">
+        <div class="row2">
+          <div><label>Nama Token</label><input id="lt_name" placeholder="Contoh: Future Coin"></div>
+          <div><label>Simbol</label><input id="lt_symbol" placeholder="Contoh: FTC" maxlength="11"></div>
+        </div>
+        <div class="row2">
+          <div><label>Initial Supply</label><input id="lt_initialSupply" type="number" placeholder="1000000"></div>
+          <div><label>Max Supply</label><input id="lt_maxSupply" type="number" placeholder="1000000"></div>
+        </div>
+        <label class="inline"><input type="checkbox" id="lt_mintable"> Mintable (owner bisa mencetak token baru)</label>
+        <label class="inline"><input type="checkbox" id="lt_burnable" checked> Burnable (holder bisa membakar token)</label>
+        <label>Owner Token</label>
+        <input id="lt_owner" placeholder="0x... (kosongkan = pakai wallet yang connect)">
+      </div>
+    </fieldset>
+
+    <fieldset class="collapsed">
+      <legend onclick="toggleFieldset(this)"><span class="chev">▾</span> Keamanan (opsional)</legend>
+      <div class="fs-body">
+        <label class="inline"><input type="checkbox" id="sec_antiBot"> Anti-bot di blok awal</label>
+        <div class="row2"><div><label>Jumlah blok anti-bot</label><input id="sec_antiBotBlocks" type="number" value="0"></div></div>
+
+        <label class="inline"><input type="checkbox" id="sec_tradingDelay"> Trading delay setelah deploy</label>
+        <div class="row2"><div><label>Delay (detik)</label><input id="sec_tradingDelaySeconds" type="number" value="0"></div></div>
+
+        <label class="inline"><input type="checkbox" id="sec_blacklist"> Aktifkan blacklist</label>
+        <label class="inline"><input type="checkbox" id="sec_whitelist"> Aktifkan whitelist</label>
+
+        <label class="inline"><input type="checkbox" id="sec_maxWalletEnabled"> Batasi max wallet</label>
+        <div class="row2"><div><label>Max wallet (% dari supply)</label><input id="sec_maxWalletPercent" type="number" value="0"></div></div>
+
+        <label class="inline"><input type="checkbox" id="sec_maxTxEnabled"> Batasi max transaksi</label>
+        <div class="row2"><div><label>Max tx (% dari supply)</label><input id="sec_maxTxPercent" type="number" value="0"></div></div>
+      </div>
+    </fieldset>
+
+    <fieldset class="collapsed">
+      <legend onclick="toggleFieldset(this)"><span class="chev">▾</span> Pajak Transaksi (opsional, maks 25%)</legend>
+      <div class="fs-body">
+        <label class="inline"><input type="checkbox" id="tax_buyEnabled"> Pajak beli</label>
+        <div class="row2"><div><label>Buy tax (%)</label><input id="tax_buy" type="number" value="0"></div></div>
+        <label class="inline"><input type="checkbox" id="tax_sellEnabled"> Pajak jual</label>
+        <div class="row2"><div><label>Sell tax (%)</label><input id="tax_sell" type="number" value="0"></div></div>
+        <label class="inline"><input type="checkbox" id="tax_transferEnabled"> Pajak transfer biasa</label>
+        <div class="row2"><div><label>Transfer tax (%)</label><input id="tax_transfer" type="number" value="0"></div></div>
+
+        <div class="hint" style="margin-top:14px;">Pembagian pajak (total harus = 100 jika salah satu pajak di atas aktif):</div>
+        <div class="row3">
+          <div><label>Burn %</label><input id="tax_burnShare" type="number" value="0"></div>
+          <div><label>Marketing %</label><input id="tax_marketingShare" type="number" value="0"></div>
+          <div><label>Development %</label><input id="tax_developmentShare" type="number" value="0"></div>
+        </div>
+        <div class="row3">
+          <div><label>Treasury %</label><input id="tax_treasuryShare" type="number" value="100"></div>
+          <div><label>Liquidity %</label><input id="tax_liquidityShare" type="number" value="0"></div>
+          <div><label>Buyback %</label><input id="tax_buybackShare" type="number" value="0"></div>
+        </div>
+        <div class="row2"><div><label>Charity %</label><input id="tax_charityShare" type="number" value="0"></div></div>
+
+        <div class="hint" style="margin-top:14px;">Wallet tujuan tiap share (isi hanya yang share-nya &gt; 0):</div>
+        <div class="row2">
+          <div><label>Marketing wallet</label><input id="tax_marketingWallet" placeholder="0x..."></div>
+          <div><label>Development wallet</label><input id="tax_developmentWallet" placeholder="0x..."></div>
+        </div>
+        <div class="row2">
+          <div><label>Treasury wallet</label><input id="tax_treasuryWallet" value="0x50Cd30Ff7f0fbBD9d0FDe1F60DE8c52D6F390c5C"></div>
+          <div><label>Liquidity wallet</label><input id="tax_liquidityWallet" placeholder="0x..."></div>
+        </div>
+        <div class="row2">
+          <div><label>Buyback wallet</label><input id="tax_buybackWallet" placeholder="0x..."></div>
+          <div><label>Charity wallet</label><input id="tax_charityWallet" placeholder="0x..."></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="collapsed">
+      <legend onclick="toggleFieldset(this)"><span class="chev">▾</span> Metadata (opsional)</legend>
+      <div class="fs-body">
+        <div class="row2">
+          <div><label>Website</label><input id="meta_website" placeholder="https://"></div>
+          <div><label>Telegram</label><input id="meta_telegram" placeholder="https://t.me/..."></div>
+        </div>
+        <div class="row2">
+          <div><label>Twitter / X</label><input id="meta_twitter" placeholder="https://x.com/..."></div>
+          <div><label>Logo URI</label><input id="meta_logo" placeholder="https://.../logo.png"></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="card">
+      <div class="hint">Biaya deploy (native EVOZ): <span id="deployFeeQuote" class="mono">—</span></div>
+      <div class="form-actions">
+        <button class="btn secondary" onclick="refreshDeployFee()">Cek Biaya Deploy</button>
+        <button class="btn" onclick="launchToken()" id="launchBtn">Deploy Token</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="panel" id="panel-exchange">
+    <div class="notice">
+      <span class="mono">LaunchFutureExchange</span> adalah payment gateway satu arah: tukar EVOZ native
+      langsung ke LFT dengan kurs tetap yang diatur owner. Bukan swap dua arah / bukan DEX.
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Kurs Saat Ini</h3>
+        <div class="value mono" id="exRate">—</div>
+        <div class="addr">LFT per 1 EVOZ</div>
+      </div>
+      <div class="card">
+        <h3>Likuiditas LFT Tersedia</h3>
+        <div class="value mono" id="exLiquidity">—</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <label>Jumlah EVOZ yang dibayarkan</label>
+      <input id="buy_amount" type="number" placeholder="0.0" oninput="updateBuyQuote()">
+      <div class="quote" id="buyQuote"></div>
+      <label>Kirim LFT ke alamat</label>
+      <input id="buy_recipient" placeholder="0x... (kosongkan = wallet yang connect)">
+      <div class="form-actions">
+        <button class="btn" onclick="buyLFT()" id="buyBtn">Beli LFT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WALLET -->
+  <div class="panel" id="panel-wallet">
+    <div class="grid">
+      <div class="card">
+        <h3>Saldo Native (EVOZ)</h3>
+        <div class="value mono" id="myNativeBalance">—</div>
+      </div>
+      <div class="card">
+        <h3>Saldo LaunchFutureToken</h3>
+        <div class="value mono" id="myTokenBalance">—</div>
+      </div>
+    </div>
+
+    <div class="section-title">Token yang Saya Deploy</div>
+    <div class="card">
+      <table id="myTokensTable">
+        <thead><tr><th>Nama</th><th>Simbol</th><th>Address</th></tr></thead>
+        <tbody><tr><td colspan="3" class="hint">Hubungkan wallet untuk memuat data.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 </main>
-<!-- END #mainContent -->
-<footer id="footer">
-<div class="container">
-<div class="footerTop">
-<div class="footerBrand">
-<img alt="LaunchFuture" class="footerLogo" src="./assets/logo.png"/>
-<div>
-<h3>
-        LaunchFuture
-       </h3>
-<p>
-        Professional ERC20MAX Launch Platform
-       </p>
-</div>
-</div>
-<nav class="footerLinks">
-<a href="#hero">
-       Home
-      </a>
-<a href="#wizardSection">
-       Launch
-      </a>
-<a href="#previewSection">
-       Preview
-      </a>
-<a href="#">
-       Documentation
-      </a>
-<a href="#">
-       GitHub
-      </a>
-</nav>
-</div>
-<div class="footerBottom">
-<div>
-      © 2026 LaunchFuture
-     </div>
-<div>
-      ERC20MAX Engine
-     </div>
-<div>
-      Version
-      <span id="appVersion">
-       1.0.0
-      </span>
-</div>
-</div>
-</div>
-</footer>
-<!-- END .container -->
-<!-- END #mainContent -->
-<!-- =====================================================
-     TOAST
-====================================================== -->
-<div aria-live="polite" id="toastContainer">
-</div>
-<!-- =====================================================
-     LOADING
-====================================================== -->
-<div hidden="" id="loadingOverlay">
-<div class="loadingCard">
-<div class="loadingSpinner">
-</div>
-<h3>
-     Loading...
-    </h3>
-<p id="loadingText">
-     Please wait...
-    </p>
-</div>
-</div>
-<!-- =====================================================
-     GLOBAL MODAL
-====================================================== -->
-<div hidden="" id="modal">
-<div id="modalBackdrop">
-</div>
-<div id="modalCard">
-<div id="modalHeader">
-<h3 id="modalTitle">
-      LaunchFuture
-     </h3>
-<button id="modalClose">
-<i data-lucide="x">
-</i>
-</button>
-</div>
-<div id="modalBody">
-</div>
-<div id="modalFooter">
-<button class="secondaryButton" id="modalCancel">
-      Cancel
-     </button>
-<button class="primaryButton" id="modalConfirm">
-      Confirm
-     </button>
-</div>
-</div>
-</div>
-<!-- =====================================================
-     MOBILE DRAWER
-====================================================== -->
-<aside hidden="" id="mobileDrawer">
-<div id="drawerHeader">
-<h3>
-     Menu
-    </h3>
-<button id="drawerClose">
-<i data-lucide="x">
-</i>
-</button>
-</div>
-<div id="drawerContent">
-</div>
-</aside>
-<!-- =====================================================
-     TEMPLATE : TOAST
-====================================================== -->
-<template id="toastTemplate">
-<div class="toast">
-<div class="toastIcon">
-<i data-lucide="info">
-</i>
-</div>
-<div class="toastContent">
-<h4>
-      Title
-     </h4>
-<p>
-      Message
-     </p>
-</div>
-</div>
-</template>
-<!-- =====================================================
-     TEMPLATE : FEATURE BADGE
-====================================================== -->
-<template id="featureBadgeTemplate">
-<span class="featureBadge">
-    Feature
-   </span>
-</template>
-<!-- =====================================================
-     TEMPLATE : REVIEW ITEM
-====================================================== -->
-<template id="reviewTemplate">
-<div class="reviewItem">
-<label>
-     Label
-    </label>
-<strong>
-     Value
-    </strong>
-</div>
-</template>
-<!-- =====================================================
-     TEMPLATE : DEPLOY LOG
-====================================================== -->
-<template id="deployLogTemplate">
-<div class="consoleLine">
-<span class="consoleTime">
-     00:00:00
-    </span>
-<span class="consoleText">
-     Message
-    </span>
-</div>
-</template>
-<!-- =====================================================
-     SCRIPT
-====================================================== -->
-<script type="module">
-import "./js/index.js";
-window.addEventListener("DOMContentLoaded", () => {
-  if (window.lucide) lucide.createIcons();
+
+<div id="toast"></div>
+
+<script>
+
+/* =====================================================================
+   CONFIG — lengkapi RPC & explorer sebelum production
+   ===================================================================== */
+const CONFIG = {
+  chain: {
+    chainIdHex: '0x325',        // 805 desimal
+    chainIdDecimal: 805,
+    chainName: 'EVOZ Mainnet',
+    nativeCurrency: { name: 'EVOZ', symbol: 'EVOZ', decimals: 18 },
+    rpcUrls: ['https://rpc.evozscan.com'],
+    blockExplorerUrls: ['https://evozscan.com']
+  },
+  contracts: {
+    treasury: '0x50Cd30Ff7f0fbBD9d0FDe1F60DE8c52D6F390c5C',
+    launchFutureToken: {
+      address: '0x62B9559F193d111aF92d9a5604d79024BFB1C847',
+      abi: [{"inputs":[{"internalType":"address","name":"initialOwner","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"allowance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientAllowance","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"uint256","name":"balance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientBalance","type":"error"},{"inputs":[{"internalType":"address","name":"approver","type":"address"}],"name":"ERC20InvalidApprover","type":"error"},{"inputs":[{"internalType":"address","name":"receiver","type":"address"}],"name":"ERC20InvalidReceiver","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"}],"name":"ERC20InvalidSender","type":"error"},{"inputs":[{"internalType":"address","name":"spender","type":"address"}],"name":"ERC20InvalidSpender","type":"error"},{"inputs":[],"name":"LFT__CannotRecoverSelf","type":"error"},{"inputs":[],"name":"LFT__InsufficientNativeBalance","type":"error"},{"inputs":[],"name":"LFT__InsufficientTokenBalance","type":"error"},{"inputs":[],"name":"LFT__InvalidCall","type":"error"},{"inputs":[],"name":"LFT__InvalidPermitSignature","type":"error"},{"inputs":[],"name":"LFT__InvalidRecipient","type":"error"},{"inputs":[],"name":"LFT__NativeTransferFailed","type":"error"},{"inputs":[],"name":"LFT__PermitExpired","type":"error"},{"inputs":[],"name":"LFT__ZeroAddress","type":"error"},{"inputs":[],"name":"LFT__ZeroAmount","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"inputs":[{"internalType":"address","name":"token","type":"address"}],"name":"SafeERC20FailedOperation","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ERC20Recovered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"NativeCoinRecovered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"TokenBurned","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DOMAIN_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burnFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"recoverERC20","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"recoverNativeCoin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]
+    },
+    launchFutureExchange: {
+      address: '0x9680B43F695d5245062e59CCA92ad92DE5aed56e',
+      abi: [{"inputs":[{"internalType":"address","name":"initialOwner","type":"address"},{"internalType":"address","name":"lft","type":"address"},{"internalType":"address","name":"initialTreasury","type":"address"},{"internalType":"uint256","name":"initialPrice","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"LFE__CannotRecoverPaymentToken","type":"error"},{"inputs":[],"name":"LFE__InsufficientLiquidity","type":"error"},{"inputs":[],"name":"LFE__InsufficientNative","type":"error"},{"inputs":[],"name":"LFE__InsufficientNativeBalance","type":"error"},{"inputs":[],"name":"LFE__InsufficientTokenBalance","type":"error"},{"inputs":[],"name":"LFE__InvalidCall","type":"error"},{"inputs":[],"name":"LFE__InvalidPrice","type":"error"},{"inputs":[],"name":"LFE__InvalidRecipient","type":"error"},{"inputs":[],"name":"LFE__NativeTransferFailed","type":"error"},{"inputs":[],"name":"LFE__ZeroAddress","type":"error"},{"inputs":[],"name":"LFE__ZeroAmount","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"inputs":[],"name":"ReentrancyGuardReentrantCall","type":"error"},{"inputs":[{"internalType":"address","name":"token","type":"address"}],"name":"SafeERC20FailedOperation","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ERC20Recovered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"oldRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newRate","type":"uint256"}],"name":"LFTPerNativeUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"nativeAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"lftAmount","type":"uint256"}],"name":"LFTPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"NativeCoinRecovered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ReserveWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldTreasury","type":"address"},{"indexed":true,"internalType":"address","name":"newTreasury","type":"address"}],"name":"TreasuryUpdated","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"availableLiquidity","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"nativeAmount","type":"uint256"}],"name":"canPurchase","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"hasLiquidity","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"lftPerNative","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paymentToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"}],"name":"purchaseWithNative","outputs":[{"internalType":"uint256","name":"lftAmount","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"nativeAmount","type":"uint256"}],"name":"quoteLFT","outputs":[{"internalType":"uint256","name":"lftAmount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"recoverERC20","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"recoverNativeCoin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"newRate","type":"uint256"}],"name":"setLFTPerNative","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newTreasury","type":"address"}],"name":"setTreasury","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"treasury","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdrawReserve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]
+    },
+    lftDeployer: {
+      address: '0x3f81E785628D452A8Aae1536D15A3586B490F0c5',
+      abi: [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"FactoryAlreadySet","type":"error"},{"inputs":[],"name":"InvalidDeployer","type":"error"},{"inputs":[],"name":"NotFactory","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"factory","type":"address"}],"name":"FactoryInitialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":false,"internalType":"bool","name":"create2","type":"bool"}],"name":"TokenDeployed","type":"event"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"}],"name":"deploy","outputs":[{"internalType":"address","name":"token","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"deployCreate2","outputs":[{"internalType":"address","name":"token","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"deployer","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newFactory","type":"address"}],"name":"initializeFactory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"predictAddress","outputs":[{"internalType":"address","name":"predicted","type":"address"}],"stateMutability":"view","type":"function"}]
+    },
+    lftFactory: {
+      address: '0xcd86Ca358283f06581365635372E5bF0D30271D3',
+      abi: [{"inputs":[{"internalType":"address","name":"_treasury","type":"address"},{"internalType":"uint16","name":"_burnPercent","type":"uint16"},{"internalType":"uint16","name":"_treasuryPercent","type":"uint16"},{"internalType":"address","name":"_deployer","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"BurnTransferFailed","type":"error"},{"inputs":[],"name":"BuyTaxLimit","type":"error"},{"inputs":[],"name":"CannotRecoverPaymentToken","type":"error"},{"inputs":[],"name":"FactoryPaused","type":"error"},{"inputs":[],"name":"FeeTransferFailed","type":"error"},{"inputs":[],"name":"IndexOutOfRange","type":"error"},{"inputs":[],"name":"InsufficientAllowance","type":"error"},{"inputs":[],"name":"InsufficientNativeFee","type":"error"},{"inputs":[],"name":"InsufficientTokenBalance","type":"error"},{"inputs":[],"name":"InvalidAmount","type":"error"},{"inputs":[],"name":"InvalidBuybackWallet","type":"error"},{"inputs":[],"name":"InvalidCharityWallet","type":"error"},{"inputs":[],"name":"InvalidDeployFee","type":"error"},{"inputs":[],"name":"InvalidDeployer","type":"error"},{"inputs":[],"name":"InvalidDevelopmentWallet","type":"error"},{"inputs":[],"name":"InvalidExchange","type":"error"},{"inputs":[],"name":"InvalidLiquidityWallet","type":"error"},{"inputs":[],"name":"InvalidMarketingWallet","type":"error"},{"inputs":[],"name":"InvalidMaxSupply","type":"error"},{"inputs":[],"name":"InvalidName","type":"error"},{"inputs":[],"name":"InvalidPaymentToken","type":"error"},{"inputs":[],"name":"InvalidPercent","type":"error"},{"inputs":[],"name":"InvalidSecurityConfig","type":"error"},{"inputs":[],"name":"InvalidSupply","type":"error"},{"inputs":[],"name":"InvalidSymbol","type":"error"},{"inputs":[],"name":"InvalidTaxShares","type":"error"},{"inputs":[],"name":"InvalidTreasury","type":"error"},{"inputs":[],"name":"InvalidTreasuryWallet","type":"error"},{"inputs":[],"name":"NoNative","type":"error"},{"inputs":[],"name":"NotNativePayment","type":"error"},{"inputs":[],"name":"NotOwner","type":"error"},{"inputs":[],"name":"NotPendingOwner","type":"error"},{"inputs":[],"name":"PaymentDisabled","type":"error"},{"inputs":[],"name":"RecoverFailed","type":"error"},{"inputs":[],"name":"ReentrancyGuardReentrantCall","type":"error"},{"inputs":[],"name":"SellTaxLimit","type":"error"},{"inputs":[],"name":"SymbolExists","type":"error"},{"inputs":[],"name":"TransferTaxLimit","type":"error"},{"inputs":[],"name":"TreasuryTransferFailed","type":"error"},{"inputs":[],"name":"UseDeployFunction","type":"error"},{"inputs":[],"name":"UseNativeDeploy","type":"error"},{"inputs":[],"name":"UtilityTokenNotReceived","type":"error"},{"inputs":[],"name":"ZeroUtilityTokenQuote","type":"error"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint16","name":"oldBurnPercent","type":"uint16"},{"indexed":false,"internalType":"uint16","name":"newBurnPercent","type":"uint16"}],"name":"BurnPercentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldDeployer","type":"address"},{"indexed":true,"internalType":"address","name":"newDeployer","type":"address"}],"name":"DeployerUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"paused","type":"bool"}],"name":"FactoryPaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"uri","type":"string"}],"name":"MetadataURIUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"pendingOwner","type":"address"}],"name":"OwnershipTransferInitiated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"count","type":"uint256"}],"name":"PaymentMethodBatchUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"key","type":"bytes32"},{"indexed":false,"internalType":"bool","name":"enabled","type":"bool"},{"indexed":false,"internalType":"uint256","name":"deployFee","type":"uint256"}],"name":"PaymentMethodUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"string","name":"symbol","type":"string"},{"indexed":false,"internalType":"uint256","name":"initialSupply","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"createdAt","type":"uint256"},{"indexed":false,"internalType":"bool","name":"create2","type":"bool"}],"name":"TokenDeployed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldTreasury","type":"address"},{"indexed":true,"internalType":"address","name":"newTreasury","type":"address"}],"name":"TreasuryUpdated","type":"event"},{"inputs":[],"name":"CHAIN_ID","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DEAD","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"acceptOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string[]","name":"symbols","type":"string[]"}],"name":"batchDisablePayment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string[]","name":"symbols","type":"string[]"}],"name":"batchEnablePayment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string[]","name":"symbols","type":"string[]"},{"internalType":"uint256[]","name":"fees","type":"uint256[]"}],"name":"batchUpdateFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"burnPercent","outputs":[{"internalType":"uint16","name":"","type":"uint16"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"creatorTokens","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"},{"internalType":"string","name":"paymentSymbol","type":"string"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"deployCreate2","outputs":[{"internalType":"address","name":"token","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"}],"name":"deployWithNative","outputs":[{"internalType":"address","name":"token","type":"address"}],"stateMutability":"payable","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"},{"internalType":"string","name":"paymentSymbol","type":"string"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"deployWithPermit","outputs":[{"internalType":"address","name":"token","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"deployedTokens","outputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"createdAt","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"deployer","outputs":[{"internalType":"contract ILFTDeployer","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"symbol","type":"string"}],"name":"disablePaymentMethod","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"factoryMetadataURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCreatorCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"creator","type":"address"}],"name":"getCreatorTokens","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"paymentSymbol","type":"string"}],"name":"getDeployFee","outputs":[{"internalType":"uint256","name":"deployFee","type":"uint256"},{"internalType":"uint256","name":"burnAmount","type":"uint256"},{"internalType":"uint256","name":"treasuryAmount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"getDeployedToken","outputs":[{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"createdAt","type":"uint256"}],"internalType":"struct ERC20MaxTypes.TokenInfo","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"offset","type":"uint256"},{"internalType":"uint256","name":"limit","type":"uint256"}],"name":"getDeployedTokens","outputs":[{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"createdAt","type":"uint256"}],"internalType":"struct ERC20MaxTypes.TokenInfo[]","name":"result","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFactoryTokenCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getPaymentKeys","outputs":[{"internalType":"bytes32[]","name":"","type":"bytes32[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"symbol","type":"string"}],"name":"getPaymentMethod","outputs":[{"components":[{"internalType":"bool","name":"enabled","type":"bool"},{"internalType":"bool","name":"isNative","type":"bool"},{"internalType":"bool","name":"burnEnabled","type":"bool"},{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"exchange","type":"address"},{"internalType":"uint256","name":"deployFee","type":"uint256"}],"internalType":"struct ERC20MaxTypes.PaymentMethod","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getStatistics","outputs":[{"components":[{"internalType":"uint256","name":"totalTokens","type":"uint256"},{"internalType":"uint256","name":"totalCreators","type":"uint256"},{"internalType":"uint256","name":"totalDeployFee","type":"uint256"},{"internalType":"uint256","name":"totalBurnedFee","type":"uint256"}],"internalType":"struct ERC20MaxTypes.FactoryStats","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"isFactoryToken","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"symbol","type":"string"}],"name":"isSymbolAvailable","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"}],"name":"isTokenFromFactory","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"paymentMethods","outputs":[{"internalType":"bool","name":"enabled","type":"bool"},{"internalType":"bool","name":"isNative","type":"bool"},{"internalType":"bool","name":"burnEnabled","type":"bool"},{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"exchange","type":"address"},{"internalType":"uint256","name":"deployFee","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pendingOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"components":[{"internalType":"uint256","name":"initialSupply","type":"uint256"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"bool","name":"burnable","type":"bool"}],"internalType":"struct ERC20MaxTypes.SupplyConfig","name":"supply","type":"tuple"},{"components":[{"internalType":"bool","name":"antiBot","type":"bool"},{"internalType":"bool","name":"blacklist","type":"bool"},{"internalType":"bool","name":"whitelist","type":"bool"},{"internalType":"bool","name":"tradingDelay","type":"bool"},{"internalType":"bool","name":"maxWalletEnabled","type":"bool"},{"internalType":"bool","name":"maxTxEnabled","type":"bool"},{"internalType":"uint16","name":"maxWalletPercent","type":"uint16"},{"internalType":"uint16","name":"maxTxPercent","type":"uint16"},{"internalType":"uint32","name":"antiBotBlocks","type":"uint32"},{"internalType":"uint32","name":"tradingDelaySeconds","type":"uint32"}],"internalType":"struct ERC20MaxTypes.SecurityConfig","name":"security","type":"tuple"},{"components":[{"internalType":"bool","name":"buyTaxEnabled","type":"bool"},{"internalType":"bool","name":"sellTaxEnabled","type":"bool"},{"internalType":"bool","name":"transferTaxEnabled","type":"bool"},{"internalType":"uint16","name":"buyTax","type":"uint16"},{"internalType":"uint16","name":"sellTax","type":"uint16"},{"internalType":"uint16","name":"transferTax","type":"uint16"},{"internalType":"uint16","name":"burnShare","type":"uint16"},{"internalType":"uint16","name":"marketingShare","type":"uint16"},{"internalType":"uint16","name":"developmentShare","type":"uint16"},{"internalType":"uint16","name":"treasuryShare","type":"uint16"},{"internalType":"uint16","name":"liquidityShare","type":"uint16"},{"internalType":"uint16","name":"buybackShare","type":"uint16"},{"internalType":"uint16","name":"charityShare","type":"uint16"},{"internalType":"address","name":"marketingWallet","type":"address"},{"internalType":"address","name":"developmentWallet","type":"address"},{"internalType":"address","name":"treasuryWallet","type":"address"},{"internalType":"address","name":"liquidityWallet","type":"address"},{"internalType":"address","name":"buybackWallet","type":"address"},{"internalType":"address","name":"charityWallet","type":"address"}],"internalType":"struct ERC20MaxTypes.TaxConfig","name":"taxes","type":"tuple"}],"internalType":"struct ERC20MaxTypes.TokenConfig","name":"config","type":"tuple"},{"components":[{"internalType":"string","name":"website","type":"string"},{"internalType":"string","name":"telegram","type":"string"},{"internalType":"string","name":"twitter","type":"string"},{"internalType":"string","name":"logoURI","type":"string"}],"internalType":"struct ERC20MaxTypes.MetadataConfig","name":"metadata","type":"tuple"},{"internalType":"bytes32","name":"salt","type":"bytes32"}],"name":"predictTokenAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"paymentSymbol","type":"string"}],"name":"quoteNativeFee","outputs":[{"internalType":"uint256","name":"nativeFee","type":"uint256"},{"internalType":"uint256","name":"utilityAmount","type":"uint256"},{"internalType":"uint256","name":"burnAmount","type":"uint256"},{"internalType":"uint256","name":"treasuryAmount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"recoverERC20","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"recoverNative","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint16","name":"newBurnPercent","type":"uint16"},{"internalType":"uint16","name":"newTreasuryPercent","type":"uint16"}],"name":"setBurnPercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newDeployer","type":"address"}],"name":"setDeployer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"uri","type":"string"}],"name":"setFactoryMetadataURI","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bool","name":"state","type":"bool"}],"name":"setPaused","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"symbol","type":"string"},{"components":[{"internalType":"bool","name":"enabled","type":"bool"},{"internalType":"bool","name":"isNative","type":"bool"},{"internalType":"bool","name":"burnEnabled","type":"bool"},{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"exchange","type":"address"},{"internalType":"uint256","name":"deployFee","type":"uint256"}],"internalType":"struct ERC20MaxTypes.PaymentMethod","name":"payment","type":"tuple"}],"name":"setPaymentMethod","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newTreasury","type":"address"}],"name":"setTreasury","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"symbolExists","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"}],"name":"tokenExists","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalBurnedFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalCreators","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalDeployFeeCollected","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalDeployed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalPaymentMethods","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"treasury","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"treasuryPercent","outputs":[{"internalType":"uint16","name":"","type":"uint16"}],"stateMutability":"view","type":"function"},{"stateMutability":"payable","type":"receive"}]
+    }
+  }
+};
+
+/* ===================================================================== */
+
+let provider, signer, userAddress;
+let tokenContract, exchangeContract, factoryContract;
+
+function toast(msg, kind){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = kind ? kind : '';
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=> t.classList.remove('show'), 3800);
+}
+
+function toastLink(msg, txHash){
+  const t = document.getElementById('toast');
+  const explorer = CONFIG.chain.blockExplorerUrls[0];
+  t.innerHTML = msg + (explorer ? ` <a href="${explorer}/tx/${txHash}" target="_blank" style="color:inherit; text-decoration:underline;">Lihat tx ${short(txHash)}</a>` : ' Tx: ' + short(txHash));
+  t.className = 'ok';
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=> t.classList.remove('show'), 6000);
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id === 'panel-'+name));
+}
+
+function toggleFieldset(legend){
+  legend.parentElement.classList.toggle('collapsed');
+}
+
+function short(addr){
+  return addr ? addr.slice(0,6) + '...' + addr.slice(-4) : '';
+}
+
+/* ---------------------------- WALLET ---------------------------- */
+
+async function connectWallet(){
+  if(!window.ethereum){
+    toast('Wallet tidak terdeteksi. Install MetaMask atau wallet EVM lain.', 'err');
+    return;
+  }
+  try{
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    await ensureNetwork();
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    tokenContract    = new ethers.Contract(CONFIG.contracts.launchFutureToken.address, CONFIG.contracts.launchFutureToken.abi, signer);
+    exchangeContract = new ethers.Contract(CONFIG.contracts.launchFutureExchange.address, CONFIG.contracts.launchFutureExchange.abi, signer);
+    factoryContract  = new ethers.Contract(CONFIG.contracts.lftFactory.address, CONFIG.contracts.lftFactory.abi, signer);
+
+    document.getElementById('connectBtn').textContent = short(userAddress);
+    toast('Wallet terhubung: ' + short(userAddress), 'ok');
+
+    loadOverview();
+    loadWallet();
+    loadExchangeInfo();
+  }catch(err){
+    console.error(err);
+    toast('Gagal konek wallet: ' + (err.shortMessage || err.message || err), 'err');
+  }
+}
+
+async function ensureNetwork(){
+  const current = await window.ethereum.request({ method: 'eth_chainId' });
+  if(current === CONFIG.chain.chainIdHex) return;
+  try{
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: CONFIG.chain.chainIdHex }]
+    });
+  }catch(switchErr){
+    if(switchErr.code === 4902){
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [{
+          chainId: CONFIG.chain.chainIdHex,
+          chainName: CONFIG.chain.chainName,
+          nativeCurrency: CONFIG.chain.nativeCurrency,
+          rpcUrls: CONFIG.chain.rpcUrls,
+          blockExplorerUrls: CONFIG.chain.blockExplorerUrls
+        }]
+      });
+    }else{
+      throw switchErr;
+    }
+  }
+}
+
+/* ---------------------------- OVERVIEW ---------------------------- */
+
+async function loadOverview(){
+  if(!provider) return;
+  try{
+    const [bal, block, total] = await Promise.all([
+      provider.getBalance(CONFIG.contracts.treasury),
+      provider.getBlockNumber(),
+      factoryContract.totalDeployed()
+    ]);
+    document.getElementById('treasuryBalance').textContent = Number(ethers.formatEther(bal)).toFixed(4) + ' EVOZ';
+    document.getElementById('blockNumber').textContent = block.toLocaleString();
+    document.getElementById('totalDeployed').textContent = total.toString();
+
+    await loadRecentTokens(Number(total));
+  }catch(err){
+    console.error(err);
+  }
+}
+
+async function loadRecentTokens(total){
+  const tbody = document.querySelector('#recentTokensTable tbody');
+  if(!total){
+    tbody.innerHTML = '<tr><td colspan="4" class="hint">Belum ada token yang di-deploy.</td></tr>';
+    return;
+  }
+  try{
+    const limit = Math.min(total, 5);
+    const offset = total - limit;
+    const tokens = await factoryContract.getDeployedTokens(offset, limit);
+    tbody.innerHTML = '';
+    [...tokens].reverse().forEach(t=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHtml(t.name)}</td><td>${escapeHtml(t.symbol)}</td>
+        <td class="mono">${short(t.creator)}</td><td class="mono">${t.initialSupply.toString()}</td>`;
+      tbody.appendChild(tr);
+    });
+  }catch(err){
+    console.error(err);
+    tbody.innerHTML = '<tr><td colspan="4" class="hint">Gagal memuat daftar token.</td></tr>';
+  }
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+/* ---------------------------- WALLET TAB ---------------------------- */
+
+async function loadWallet(){
+  if(!provider || !userAddress) return;
+  try{
+    const nativeBal = await provider.getBalance(userAddress);
+    document.getElementById('myNativeBalance').textContent = Number(ethers.formatEther(nativeBal)).toFixed(4) + ' EVOZ';
+
+    const [symbol, decimals, rawBal] = await Promise.all([
+      tokenContract.symbol(),
+      tokenContract.decimals(),
+      tokenContract.balanceOf(userAddress)
+    ]);
+    document.getElementById('myTokenBalance').textContent = Number(ethers.formatUnits(rawBal, decimals)).toFixed(4) + ' ' + symbol;
+
+    const myTokens = await factoryContract.getCreatorTokens(userAddress);
+    const tbody = document.querySelector('#myTokensTable tbody');
+    if(myTokens.length === 0){
+      tbody.innerHTML = '<tr><td colspan="3" class="hint">Anda belum men-deploy token lewat factory ini.</td></tr>';
+    }else{
+      tbody.innerHTML = '';
+      for(const addr of myTokens){
+        const c = new ethers.Contract(addr, CONFIG.contracts.launchFutureToken.abi, provider);
+        const [n, s] = await Promise.all([c.name(), c.symbol()]);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${escapeHtml(n)}</td><td>${escapeHtml(s)}</td><td class="mono">${short(addr)}</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+  }catch(err){
+    console.error(err);
+  }
+}
+
+/* ---------------------------- LAUNCH TOKEN ---------------------------- */
+
+function pct(id){ return Math.round(parseFloat(document.getElementById(id).value || '0')); }
+function num(id){ return document.getElementById(id).value || '0'; }
+function chk(id){ return document.getElementById(id).checked; }
+function addrOrZero(id){
+  const v = document.getElementById(id).value.trim();
+  return v || '0x0000000000000000000000000000000000000000';
+}
+
+function buildConfigStruct(){
+  const owner = document.getElementById('lt_owner').value.trim() || userAddress;
+  return {
+    name: document.getElementById('lt_name').value.trim(),
+    symbol: document.getElementById('lt_symbol').value.trim(),
+    owner: owner,
+    supply: {
+      initialSupply: ethers.parseUnits(num('lt_initialSupply'), 18),
+      maxSupply: ethers.parseUnits(num('lt_maxSupply'), 18),
+      mintable: chk('lt_mintable'),
+      burnable: chk('lt_burnable')
+    },
+    security: {
+      antiBot: chk('sec_antiBot'),
+      blacklist: chk('sec_blacklist'),
+      whitelist: chk('sec_whitelist'),
+      tradingDelay: chk('sec_tradingDelay'),
+      maxWalletEnabled: chk('sec_maxWalletEnabled'),
+      maxTxEnabled: chk('sec_maxTxEnabled'),
+      maxWalletPercent: pct('sec_maxWalletPercent'),
+      maxTxPercent: pct('sec_maxTxPercent'),
+      antiBotBlocks: pct('sec_antiBotBlocks'),
+      tradingDelaySeconds: pct('sec_tradingDelaySeconds')
+    },
+    taxes: {
+      buyTaxEnabled: chk('tax_buyEnabled'),
+      sellTaxEnabled: chk('tax_sellEnabled'),
+      transferTaxEnabled: chk('tax_transferEnabled'),
+      buyTax: pct('tax_buy'),
+      sellTax: pct('tax_sell'),
+      transferTax: pct('tax_transfer'),
+      burnShare: pct('tax_burnShare'),
+      marketingShare: pct('tax_marketingShare'),
+      developmentShare: pct('tax_developmentShare'),
+      treasuryShare: pct('tax_treasuryShare'),
+      liquidityShare: pct('tax_liquidityShare'),
+      buybackShare: pct('tax_buybackShare'),
+      charityShare: pct('tax_charityShare'),
+      marketingWallet: addrOrZero('tax_marketingWallet'),
+      developmentWallet: addrOrZero('tax_developmentWallet'),
+      treasuryWallet: addrOrZero('tax_treasuryWallet'),
+      liquidityWallet: addrOrZero('tax_liquidityWallet'),
+      buybackWallet: addrOrZero('tax_buybackWallet'),
+      charityWallet: addrOrZero('tax_charityWallet')
+    }
+  };
+}
+
+function buildMetadataStruct(){
+  return {
+    website: document.getElementById('meta_website').value.trim(),
+    telegram: document.getElementById('meta_telegram').value.trim(),
+    twitter: document.getElementById('meta_twitter').value.trim(),
+    logoURI: document.getElementById('meta_logo').value.trim()
+  };
+}
+
+function validateBeforeDeploy(cfg){
+  if(!cfg.name) return 'Nama token wajib diisi.';
+  if(!cfg.symbol) return 'Simbol token wajib diisi.';
+  if(cfg.supply.initialSupply > cfg.supply.maxSupply) return 'Initial supply tidak boleh lebih besar dari max supply.';
+  const taxOn = cfg.taxes.buyTaxEnabled || cfg.taxes.sellTaxEnabled || cfg.taxes.transferTaxEnabled;
+  if(taxOn){
+    const totalShare = cfg.taxes.burnShare + cfg.taxes.marketingShare + cfg.taxes.developmentShare +
+      cfg.taxes.treasuryShare + cfg.taxes.liquidityShare + cfg.taxes.buybackShare + cfg.taxes.charityShare;
+    if(totalShare !== 100) return 'Total pembagian pajak (share) harus = 100, saat ini ' + totalShare + '.';
+    if(cfg.taxes.buyTax > 25 || cfg.taxes.sellTax > 25 || cfg.taxes.transferTax > 25)
+      return 'Setiap pajak (buy/sell/transfer) maksimal 25%.';
+  }
+  return null;
+}
+
+async function refreshDeployFee(){
+  if(!factoryContract){ toast('Hubungkan wallet dulu.', 'err'); return; }
+  try{
+    const [nativeFee] = await factoryContract.quoteNativeFee('NATIVE');
+    document.getElementById('deployFeeQuote').textContent = ethers.formatEther(nativeFee) + ' EVOZ';
+  }catch(err){
+    console.error(err);
+    document.getElementById('deployFeeQuote').textContent = 'Gagal mengambil biaya';
+  }
+}
+
+async function launchToken(){
+  if(!factoryContract || !signer){ toast('Hubungkan wallet dulu.', 'err'); return; }
+  const cfg = buildConfigStruct();
+  const err = validateBeforeDeploy(cfg);
+  if(err){ toast(err, 'err'); return; }
+  const meta = buildMetadataStruct();
+
+  const btn = document.getElementById('launchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Deploying...';
+  try{
+    const [nativeFee] = await factoryContract.quoteNativeFee('NATIVE');
+    const tx = await factoryContract.deployWithNative(cfg, meta, { value: nativeFee });
+    toast('Transaksi terkirim, menunggu konfirmasi...', 'ok');
+    const receipt = await tx.wait();
+    toastLink('Token berhasil di-deploy!', receipt.hash);
+    loadOverview();
+    loadWallet();
+  }catch(err){
+    console.error(err);
+    toast('Deploy gagal: ' + (err.shortMessage || err.reason || err.message || err), 'err');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Deploy Token';
+  }
+}
+
+/* ---------------------------- EXCHANGE / BUY LFT ---------------------------- */
+
+async function loadExchangeInfo(){
+  if(!exchangeContract) return;
+  try{
+    const [rate, liquidity] = await Promise.all([
+      exchangeContract.lftPerNative(),
+      exchangeContract.availableLiquidity()
+    ]);
+    document.getElementById('exRate').textContent = ethers.formatUnits(rate, 18);
+    document.getElementById('exLiquidity').textContent = Number(ethers.formatUnits(liquidity, 18)).toFixed(2) + ' LFT';
+  }catch(err){
+    console.error(err);
+  }
+}
+
+async function updateBuyQuote(){
+  const el = document.getElementById('buy_amount');
+  const out = document.getElementById('buyQuote');
+  if(!exchangeContract || !el.value){ out.textContent = ''; return; }
+  try{
+    const amountWei = ethers.parseEther(el.value);
+    const lft = await exchangeContract.quoteLFT(amountWei);
+    out.textContent = '≈ ' + ethers.formatUnits(lft, 18) + ' LFT';
+  }catch(err){
+    out.textContent = '';
+  }
+}
+
+async function buyLFT(){
+  if(!exchangeContract || !signer){ toast('Hubungkan wallet dulu.', 'err'); return; }
+  const amountStr = document.getElementById('buy_amount').value;
+  if(!amountStr || parseFloat(amountStr) <= 0){ toast('Isi jumlah EVOZ terlebih dahulu.', 'err'); return; }
+  const recipient = document.getElementById('buy_recipient').value.trim() || userAddress;
+
+  const btn = document.getElementById('buyBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Memproses...';
+  try{
+    const amountWei = ethers.parseEther(amountStr);
+    const tx = await exchangeContract.purchaseWithNative(recipient, { value: amountWei });
+    toast('Transaksi terkirim, menunggu konfirmasi...', 'ok');
+    const receipt = await tx.wait();
+    toastLink('Pembelian LFT berhasil!', receipt.hash);
+    loadWallet();
+    loadExchangeInfo();
+  }catch(err){
+    console.error(err);
+    toast('Pembelian gagal: ' + (err.shortMessage || err.reason || err.message || err), 'err');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Beli LFT';
+  }
+}
+
+/* ---------------------------- INIT ---------------------------- */
+
+window.addEventListener('load', async ()=>{
+  if(CONFIG.chain.rpcUrls[0].startsWith('TODO')){
+    // biarkan notice warning tampil; tidak memblokir fungsi lain
+  } else {
+    document.getElementById('rpcWarning').style.display = 'none';
+  }
+  if(window.ethereum && window.ethereum.selectedAddress){
+    connectWallet();
+  }
+  if(window.ethereum){
+    window.ethereum.on('accountsChanged', ()=> window.location.reload());
+    window.ethereum.on('chainChanged', ()=> window.location.reload());
+  }
 });
 </script>
-<script>
-// ── Three.js Globe Animation ──────────────────────
-(function() {
-  function initGlobe() {
-    const canvas = document.getElementById("globeCanvas");
-    if (!canvas || !window.THREE) return;
-
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-
-    // Group everything so we can reposition as one unit per breakpoint
-    const group = new THREE.Group();
-    scene.add(group);
-
-    const setSize = () => {
-      const w = window.innerWidth, h = window.innerHeight;
-      const mobile = w < 768;
-
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-
-      // Zoom out a touch on narrow screens so the globe isn't cropped,
-      // and shift it toward the top so it sits behind the hero, not the form.
-      camera.position.z = mobile ? 3.6 : 2.8;
-      group.position.set(mobile ? 0 : 0.62, mobile ? 0.55 : 0.18, 0);
-      group.scale.setScalar(mobile ? 0.85 : 1);
-
-      camera.updateProjectionMatrix();
-    };
-
-    // Globe sphere
-    const geo = new THREE.SphereGeometry(1, 40, 40);
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0xffd86a,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.16
-    });
-    const globe = new THREE.Mesh(geo, mat);
-    group.add(globe);
-
-    // Glow ring (torus)
-    const ringGeo = new THREE.TorusGeometry(1.08, 0.003, 8, 120);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd86a, transparent: true, opacity: 0.45 });
-    const ring    = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI / 2;
-    group.add(ring);
-
-    // Orbit ring
-    const orbitGeo = new THREE.TorusGeometry(1.32, 0.002, 8, 160);
-    const orbitMat = new THREE.MeshBasicMaterial({ color: 0xffd86a, transparent: true, opacity: 0.28 });
-    const orbit    = new THREE.Mesh(orbitGeo, orbitMat);
-    orbit.rotation.x = Math.PI / 6;
-    group.add(orbit);
-
-    // Dot particle on orbit
-    const dotGeo = new THREE.SphereGeometry(0.016, 8, 8);
-    const dotMat = new THREE.MeshBasicMaterial({ color: 0xffd86a });
-    const dot    = new THREE.Mesh(dotGeo, dotMat);
-    group.add(dot);
-    let dotAngle = 0;
-
-    // Ambient glow using a large transparent sphere
-    const glowGeo = new THREE.SphereGeometry(1.4, 20, 20);
-    const glowMat = new THREE.MeshBasicMaterial({
-      color: 0xffd86a, transparent: true, opacity: 0.035, side: THREE.BackSide
-    });
-    group.add(new THREE.Mesh(glowGeo, glowMat));
-
-    setSize();
-
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(setSize, 120);
-    });
-
-    const clock = new THREE.Clock();
-    (function animate() {
-      requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      globe.rotation.y = t * 0.08;
-      globe.rotation.x = Math.sin(t * 0.04) * 0.12;
-      orbit.rotation.z = t * 0.04;
-      dotAngle += 0.005;
-      dot.position.set(
-        Math.cos(dotAngle) * 1.32,
-        Math.sin(dotAngle * 0.5) * 0.3,
-        Math.sin(dotAngle) * 1.32
-      );
-      renderer.render(scene, camera);
-    })();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initGlobe);
-  } else {
-    initGlobe();
-  }
-})();
-</script>
-<!-- END #app -->
 </body>
 </html>
